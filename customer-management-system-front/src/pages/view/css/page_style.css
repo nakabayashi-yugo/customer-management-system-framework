@@ -1,0 +1,380 @@
+@charset "utf-8";
+
+
+* { font-family: "游ゴシック", YuGothic, "メイリオ", Meiryo, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "MSPゴシック", sans-serif; }
+
+html {
+    position: relative;
+    background-color: #f6f5ff;
+}
+
+.input--required, .error-message {
+    color: #ff0000;
+}
+
+/*ボタンの設定
+/* 全てのボタンのデザインを変更するよ */
+.button {
+    border-bottom: solid 2px #fff;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2),
+        0 2px 2px rgba(0, 0, 0, 0.19);
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 0 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.button:hover {
+    transform: translateY(-3px); /* ← ここでちょっと上にふわっと動く！ */
+}
+.entry-button {
+    background-color: #ff7f50;
+    font-size: 1rem;
+    margin: 20px 20px 20px 20px;
+}
+.edit-button {
+    background-color: #ffff00;
+}
+.company-button {
+    background-color: #87cefa;
+    font-size: 20px;
+}
+.search-button {
+    background-color: #add8e6;
+    width: 80px;
+}
+.reset-button {
+    background-color: #ff0000;
+    width: 80px;
+}
+.delete-button {
+    background-color: #ff0000;
+    padding: auto;
+}
+.return-button {
+    background-color: #20b2aa;
+    font-size: 20px;
+    margin: 20px 20px 20px 20px;
+}
+
+.input {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}.input:hover {
+    transform: translateY(-3px); /* ← ここでちょっと上にふわっと動く！ */
+}
+
+.select {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}.select:hover {
+    transform: translateY(-3px); /* ← ここでちょっと上にふわっと動く！ */
+}
+
+
+.main-wrapper {          /* 全体 */
+    width:100%;
+}.main-header {         /* ヘッダー */
+    border-bottom:4px solid #050065;
+    width: 30%;
+    padding:20px 0px 20px 20px;
+}.main-title {          /* 画面タイトル */
+    font-weight: bold;
+    font-size: 25px;
+    margin-left: 20%;
+}
+.main-content {         /* コンテンツ全体 */
+    width: 100%;
+}
+
+.content-user-input {
+   padding: 50px 0px 20px 0px;
+}.user-input-table{
+    background-color: #a9a9a9;
+    width: 70%;
+    height: 100px;
+    margin: 0px 20px 0px 20%;
+}.user-input-name-box {
+    text-align: center;
+}.user-input-header {
+    background-color: #D3D3D3;
+}
+.user-input {
+    background-color: #FFFFFF;
+    text-align: left;
+}.user-input > * {
+    width: 95%;
+    height: 100%;
+    margin: 0px 5px 0px 2px;
+    border: none;
+}
+.content-login {
+    text-align: center;
+}
+
+/* トップ画面 */
+.content-link {
+    padding: 50px 0px 50px 0px;
+}.top-link-box {
+    background-color: #00ffff;
+    width: 50%;
+    height: 500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px; /* ← これで角が丸くなる！ */
+}.link {      /* トップ画面　コンテンツ */
+    background-color: #40e0d0;
+    font-size: 200%;
+    margin-top: 5%;
+    margin: auto;
+    border: 2px solid #fff; /* ← 外枠追加（黒、2px） */
+    padding: 10px; /* ← 枠と中身の余白 */
+    border-radius: 10px; /* ← 角丸（お好みで） */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}.link:hover {
+    transform: translateY(-3px); /* ← ここでちょっと上にふわっと動く！ */
+  }
+
+
+
+.content-search{        /* 一覧画面　検索枠 */
+    height: 100px;
+    padding:20px 20px 20px 20px;
+}.search-input {        /* 検索入力枠 */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}.search-input > *{
+    margin: 20px 0px 20px 0px;
+}
+.search-customer-name {    /* 検索枠　名前入力枠 */
+    width: 20%;
+}.search-customer-name input {      /* 検索枠　名前入力枠　各位 */
+    width: 100%;
+    height: 24px;
+}
+.search-born-date-box {
+    width: 100px;
+    display: flex;
+    flex-direction: column; /* ←縦並びにする！ */
+}.search-born-date-box > * {
+    width: 100%;
+    height: 20px;
+}
+.search-company {
+    width: 20%;
+}
+
+
+.content-list {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .list-entry-button {
+    width: 100%;
+    height: auto;
+    text-align: center;
+  }
+  
+  .list-entry-button > .entry-button {
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+  }
+  
+  .list-control {
+    text-align: right;
+    padding: 0.5rem;
+  }
+  
+  .list-control > * {
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    flex-wrap: wrap;
+  }
+  
+  .list-disp-num-header {
+    font-size: 1rem;
+    margin: auto 0 0 0;
+  }
+  
+  .list-sort-box > * {
+    height: auto;
+    margin: 0.25rem;
+  }
+  
+  .list-customers {
+    padding: 1rem;
+  }
+  
+  .list-customer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .list-customer > p {
+    padding: 0 1rem;
+  }
+  
+  .list-customers-table {
+    background-color: #a9a9a9;
+    width: 100%;
+    table-layout: auto;
+    margin: auto;
+    text-align: center;
+    overflow-x: auto;
+  }
+  
+  .list-customers-table-item-name {
+    background-color: #D3D3D3;
+    height: auto;
+  }
+  
+  .list-customers-table-item {
+    background-color: #ffffff;
+  }
+  
+  .list-customers-table-item > tr > td {
+    height: auto;
+    word-break: break-word;
+    padding: 0.5rem;
+  }
+  
+  .list-customers-table-edit-form,
+  .list-costomers-table-edit-button,
+  .list-customers-table-delete-button {
+    width: 100%;
+    height: auto;
+    margin: auto;
+  }
+  
+  .list-pager {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .list-pager-link {
+    padding: 0 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .content-list {
+      padding: 0.5rem;
+    }
+  
+    .list-entry-button > .entry-button {
+      width: 100%;
+      font-size: 1rem;
+    }
+  
+    .list-customers-table {
+      font-size: 0.9rem;
+      overflow-x: scroll;
+    }
+  
+    .list-disp-num-header {
+      font-size: 0.9rem;
+    }
+  
+    .list-sort-box > * {
+      width: 100%;
+      margin: 0.25rem 0;
+    }
+  
+    .list-control {
+      text-align: center;
+    }
+  
+    .list-customer {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+
+.content-title {
+    text-align: center;
+}
+.entry-input {
+    padding: 20px 0px 20px 0px;
+    display: flex;
+}
+.entry-input-table {
+    background-color: #a9a9a9;
+    width: 70%;
+    height: 300px;
+    margin: 0px 20px 0px 20%;
+}.entry-input-table > tbody > tr {
+    text-align: center;
+}.entry-input-table > tbody > tr > th {
+    background-color: #D3D3D3;
+}.entry-input-table > tbody > tr > td {
+    background-color: #FFFFFF;
+}
+.entry-input-form {
+    text-align: right;
+}.entry-input-form > * {
+    width: 95%;
+    height: 100%;
+    text-align: right;
+    margin: 0px 5px 0px 2px;
+    border: none;
+}.entry-input-form > input[type = "text"] {
+    text-align: left;
+}
+.content-company {
+    width: 30%;
+    position: relative;
+}.company-button {
+    position: absolute;
+    bottom: 0;
+}
+.content-entry {
+    text-align: center;
+}
+.content-return {
+    text-align: right;
+}
+
+
+.edit-input {
+    padding: 20px 0px 20px 0px;
+    display: flex;
+}
+.edit-input-table {
+    background-color: #a9a9a9;
+    width: 70%;
+    height: 300px;
+    margin: 0px 20px 0px 20%;
+}.edit-input-table > tbody > tr {
+    text-align: center;
+}.edit-input-table > tbody > tr > th {
+    background-color: #D3D3D3;
+}.edit-input-table > tbody > tr > td {
+    background-color: #FFFFFF;
+}
+.edit-input-form {
+    text-align: right;
+}.edit-input-form > * {
+    width: 95%;
+    height: 100%;
+    text-align: right;
+    margin: 0px 5px 0px 2px;
+    border: none;
+}
+.content-edit {
+    text-align: center;
+}.content-edit > .edit-button {
+    font-size: 25px;
+    margin: 20px 20px 20px 20px;
+}
+
+
