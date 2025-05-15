@@ -17,12 +17,6 @@
             $result = $this->model->getCompany($data);
             return $result;
         }
-        //会社ID全件取得
-        public function getCompanyIds($data)
-        {
-            $result = $this->model->getCompanyIds($data);
-            return $result;
-        }
         
         //会社一覧取得
         public function companyList($data)

@@ -4,6 +4,9 @@
 
     use Illuminate\Http\Request;
     use App\Services\ServiceUsers;
+    
+    use App\Dto\DtoUsersLogin;
+    use App\Dto\DtoUsersEntry;
 
     class ControllerUsers extends Controller
     {
@@ -13,14 +16,17 @@
         }
         public function userLogin(Request $request)
         {
-            $result = $this->service->userLogin($request->all());
+            //dto生成
+            $dto = new DtoUsersLogin($request->all());
+            $result = $this->service->userLogin(get_object_vars($dto));
 
             return response()->json($result);
         }
 
         public function userEntry(Request $request)
         {
-            $result = $this->service->userEntry($request->all());
+            $dto = new DtoUsersEntry($request->all());
+            $result = $this->service->userEntry(get_object_vars($dto));
 
             return response()->json($result);
         }

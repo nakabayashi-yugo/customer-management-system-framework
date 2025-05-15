@@ -7,9 +7,25 @@ function UserLoginPage() {
     const navigate = useNavigate();
     const login_button_ref = useRef(null);
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         console.log('ログイン実行', username, password);
         // ここでAPI叩く処理を書く
+        const api_url = "http://127.0.0.1:8000/api/users/login";
+        const send_data = {
+            user_name: username,
+            passwd: password
+        };
+        console.log(send_data);
+
+        const response_api = await fetch(api_url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(send_data)
+        });
+        const result = await response_api.json();
+        console.log(result);
     };
 
     useEffect(() => {

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Http\Kernel;
+use App\Http\Middleware\VerifyCsrfToken;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +19,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Kernel $kernel): void
     {
-        //
+        $kernel->appendMiddlewareToGroup('web', VerifyCsrfToken::class);
     }
 }

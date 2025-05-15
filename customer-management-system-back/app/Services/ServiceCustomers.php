@@ -11,27 +11,6 @@
         {
             $this->model = new ModelCustomers();
         }
-        //顧客ID一覧ゲット関数
-        public function getCustomerIds($data)
-        {
-            $result = $this->model->getCustomerIds($data);
-            return $result;
-        }
-        //顧客テーブルに登録されている会社ID一覧ゲット関数
-        public function getCustomerIncludedCompanyIds($data)
-        {
-            $result = $this->model->getCustomerIncludedCompanyIds($data);
-            return $result;
-        }
-        //引数によって渡された顧客IDが顧客テーブルに登録済みか返す関数
-        //true: 登録済み
-        //false: 登録されていない
-        /**/
-        public function isIdIncluded($data)
-        {
-            $result = $this->model->isIdIncluded($data);
-            return $result;
-        }
 
         //一覧取得
         public function customerList($data)

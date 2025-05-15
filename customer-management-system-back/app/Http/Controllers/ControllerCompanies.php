@@ -5,6 +5,12 @@
     use Illuminate\Http\Request;
     use App\Services\ServiceCompanies;
 
+    use App\Dto\DtoCompaniesGetCompany;
+    use App\Dto\DtoCompaniesList;
+    use App\Dto\DtoCompaniesDelete;
+    use App\Dto\DtoCompaniesEntry;
+    use App\Dto\DtoCompaniesEdit;
+
     class ControllerCompanies extends Controller
     {
         public function __construct()
@@ -14,38 +20,37 @@
         //会社IDの会社取得
         public function getCompany(Request $request)
         {
-            $result = $this->service->getCompany($request->all());
-            return response()->json($result);
-        }
-        //会社ID全件取得
-        public function getCompanyIds(Request $request)
-        {
-            $result = $this->service->getCompanyIds($request->all());
+            $dto = new DtoCompaniesGetCompany($request->all());
+            $result = $this->service->getCompany(get_object_vars($dto));
             return response()->json($result);
         }
         
         //会社一覧取得
         public function companyList(Request $request)
         {
-            $result = $this->service->companyList($request->all());
+            $dto = new DtoCompaniesList($request->all());
+            $result = $this->service->companyList(get_object_vars($dto));
             return response()->json($result);
         }
         //会社削除
         public function companyDelete(Request $request)
         {
-            $result = $this->service->companyDelete($request->all());
+            $dto = new DtoCompaniesDelete($request->all());
+            $result = $this->service->companyDelete(get_object_vars($dto));
             return response()->json($result);
         }
         //会社登録
         public function companyEntry(Request $request)
         {
-            $result = $this->service->companyEntry($request->all());
+            $dto = new DtoCompaniesEntry($request->all());
+            $result = $this->service->companyEntry(get_object_vars($dto));
             return response()->json($result);
         }
         //会社編集
         public function companyEdit(Request $request)
         {
-            $result = $this->service->companyEdit($request->all());
+            $dto = new DtoCompaniesEdit($request->all());
+            $result = $this->service->companyEdit(get_object_vars($dto));
             return response()->json($result);
         }
     }

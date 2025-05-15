@@ -128,8 +128,6 @@
         public function customerList($data)
         {
             try {
-                //悩んだ。検索の方のdtoのuser_idに一覧のdtoのuser_idを入れる
-                $data["search_data"]["user_id"] = $data["user_id"];
                 $disp_data = $this->customerSearch($data["search_data"]);
                 //空だったらおわり
                 if(empty($disp_data))    return collect();
@@ -206,8 +204,8 @@
                                         'mail_address'   => $data['mail_address'],
                                         'phone_number'   => $data['phone_number'],
                                         'sex'            => $data['sex'],
-                                        'born_date'      => $data['born_date'],
                                         'company_id'     => $data['company_id'],
+                                        'born_date'      => $data['born_date'],
                                     ]);
 
                 if ($updatedCount > 0) {

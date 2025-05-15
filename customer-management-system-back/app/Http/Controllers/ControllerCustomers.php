@@ -5,74 +5,68 @@
     use Illuminate\Http\Request;
     use App\Services\ServiceCustomers; // サービスを使う
 
+    use App\Dto\DtoCustomersList;
+    use App\Dto\DtoCustomersCount;
+    use App\Dto\DtoCustomersDelete;
+    use App\Dto\DtoCustomersEntry;
+    use App\Dto\DtoCustomersEdit;
+    use App\Dto\DtoCustomersGetCustomer;
+    use App\Dto\DtoCustomersGetCustomers;
+
     class ControllerCustomers extends Controller
     {
         public function __construct()
         {
             $this->service = new ServiceCustomers();
         }
-        //顧客ID一覧ゲット関数
-        public function getCustomerIds(Request $request)
-        {
-            $result = $this->service->getCustomerIds($request->all());
-            return response()->json($result);
-        }
-        //顧客テーブルに登録されている会社ID一覧ゲット関数
-        public function getCustomerIncludedCompanyIds(Request $request)
-        {
-            $result = $this->service->getCustomerIncludedCompanyIds($request->all());
-            return response()->json($result);
-        }
-        //引数によって渡された顧客IDが顧客テーブルに登録済みか返す関数
-        //true: 登録済み
-        //false: 登録されていない
-        /**/
-        public function isIdIncluded(Request $request)
-        {
-            $result = $this->service->isIdIncluded($request->all());
-            return response()->json($result);
-        }
 
         //一覧取得
         public function customerList(Request $request)
         {
-            $result = $this->service->customerList($request->all());
+            $dto = new DtoCustomersList($request->all());
+            $result = $this->service->customerList(get_object_vars($dto));
             return response()->json($result);
         }
         //顧客件数取得
         public function customerCount(Request $request)
         {
-            $result = $this->service->customerCount($request->all());
+            $dto = new DtoCustomersCount($request->all());
+            $result = $this->service->customerCount(get_object_vars($dto));
             return response()->json($result);
         }
         //顧客削除
         public function customerDelete(Request $request)
         {
-            $result = $this->service->customerDelete($request->all());
+            $dto = new DtoCustomersDelete($request->all());
+            $result = $this->service->customerDelete(get_object_vars($dto));
             return response()->json($result);
         }
         //顧客登録
         public function customerEntry(Request $request)
         {
-            $result = $this->service->customerEntry($request->all());
+            $dto = new DtoCustomersEntry($request->all());
+            $result = $this->service->customerEntry(get_object_vars($dto));
             return response()->json($result);
         }
         //顧客編集
         public function customerEdit(Request $request)
         {
-            $result = $this->service->customerEdit($request->all());
+            $dto = new DtoCustomersEdit($request->all());
+            $result = $this->service->customerEdit(get_object_vars($dto));
             return response()->json($result);
         }
         //顧客IDの顧客取得
         public function getCustomer(Request $request)
         {
-            $result = $this->service->getCustomer($request->all());
+            $dto = new DtoCustomersGetCustomer($request->all());
+            $result = $this->service->getCustomer(get_object_vars($dto));
             return response()->json($result);
         }
         //顧客全取得
         public function getCustomers(Request $request)
         {
-            $result = $this->service->getCustomers($request->all());
+            $dto = new DtoCustomersGetCustomers($request->all());
+            $result = $this->service->getCustomers(get_object_vars($dto));
             return response()->json($result);
         }
     }
