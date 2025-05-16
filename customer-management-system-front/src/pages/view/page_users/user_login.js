@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { dtoUsersLogin } from "./../../dto/users/dto_users_login.ts";
 
 function UserLoginPage() {
     const [username, setUsername] = useState('');
@@ -8,24 +9,35 @@ function UserLoginPage() {
     const login_button_ref = useRef(null);
 
     const handleLogin = async () => {
-        console.log('ログイン実行', username, password);
         // ここでAPI叩く処理を書く
-        const api_url = "http://127.0.0.1:8000/api/users/login";
-        const send_data = {
-            user_name: username,
-            passwd: password
-        };
-        console.log(send_data);
+        try {
+            const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/users/login";
+            const send_data = new dtoUsersLogin({
+                user_name: username,
+                passwd: password
+            });
+            const response_api = await fetch(api_url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(send_data),
+                credentials: 'include',
+            });
+            const result = await response_api.json();
+            if(result.success == true)
+            {
+                alert("ログイン成功");
+                navigate('/cust_top');
+            }
+            else
+            {
+                throw new Error("なんでかは知らないよ");
+            }
+        } catch(error) {
+            console.error("ログイン失敗：", error);
+        }
 
-        const response_api = await fetch(api_url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(send_data)
-        });
-        const result = await response_api.json();
-        console.log(result);
     };
 
     useEffect(() => {

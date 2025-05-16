@@ -5,8 +5,8 @@
     use Illuminate\Http\Request;
     use App\Services\ServiceUsers;
     
-    use App\Dto\DtoUsersLogin;
-    use App\Dto\DtoUsersEntry;
+    use App\Dtos\Users\DtoUsersLogin;
+    use App\Dtos\Users\DtoUsersEntry;
 
     class ControllerUsers extends Controller
     {

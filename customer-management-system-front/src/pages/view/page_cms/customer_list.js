@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { dtoCustomersList } from "./../../dto/customers/dto_customers_list.ts";
 
 function CustomerListPage() {
     const navigate = useNavigate();
@@ -29,6 +30,7 @@ function CustomerListPage() {
 
     useEffect(() => {
         console.log("画面きたから初回だけ検索しとくね");
+        onDto();
         onSearch();
         onSort("cust_id", "昇順");  // 必要なら
     }, []);  // ← 空配列にすると初回だけ実行される
@@ -41,6 +43,8 @@ function CustomerListPage() {
     const onDto = () => {
         //dtoからデータ取得
         //take_list_dataにいれる
+        setTakeListData(new dtoCustomersList());
+        console.log("DTO初期化", takeListData);
     }
     const onSearch = () => {
         setTakeListData(prev => ({
@@ -57,8 +61,31 @@ function CustomerListPage() {
         }));
         console.log("検索します", name, nameKana, sex, bornYear, bornMonth, bornDate, company);
     };
-    const onList = () => {
+    const onList = async () => {
         console.log("リスト出すぞー", takeListData);
+        try {
+            const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/list";
+            const response_api = await fetch(api_url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(takeListData),
+                credentials: 'include',
+            });
+            const result = await response_api.json();
+            console.log(result);
+            if(result.success == true)
+            {
+                
+            }
+            else
+            {
+                throw new Error("なんでかは知らないよ");
+            }
+        } catch(error) {
+            console.error("一覧取得失敗", error);
+        }
     }
     const onSort = (_key = null, _order = null) => {
         setTakeListData(prev => ({

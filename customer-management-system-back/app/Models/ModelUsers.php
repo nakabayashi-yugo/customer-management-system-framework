@@ -17,7 +17,8 @@
         public function userLogin($data)
         {
             try {
-                $user = $this::where("user_name", $data["user_name"])->first();
+                $user = self::where("user_name", $data["user_name"])->first();
+                
                 if(!$user)
                 {
                     return [];
@@ -25,7 +26,9 @@
                 //パスワードあってるかな
                 if(password_verify($data["passwd"], $user->passwd) || $data["passwd"] === $user->passwd)
                 {
-                    Session::put("user_id", $user->user_id);
+                    Session::put("user_id", $user->user_id);   
+                    Session::save();  // ← これ追加
+                    file_put_contents("./debug_log.txt", "ログイン直後です:" . print_r(Session::get('user_id'), true) . "\n");
                     return ["success" => true];
                 }
                 return [];
@@ -38,7 +41,7 @@
         {
             try{
                 $hashed_passwd = password_hash($data["passwd"], PASSWORD_DEFAULT);
-                $this::create([
+                self::create([
                     'user_name' => $data['user_name'],
                     'passwd'    => $hashed_passwd,
                 ]);

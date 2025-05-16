@@ -1,8 +1,18 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\ControllerUsers;
 use App\Http\Controllers\ControllerCustomers;
 use App\Http\Controllers\ControllerCompanies;
+
+Route::options('/{any}', function (Request $request) {
+    return response('', 204)
+        ->header('Access-Control-Allow-Origin', 'http://localhost:3000')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+        ->header('Access-Control-Allow-Credentials', 'true');
+})->where('any', '.*');
+
 
 Route::post("/users/login", [ControllerUsers::class, "userLogin"]);
 Route::post("/users/entry", [ControllerUsers::class, "userEntry"]);

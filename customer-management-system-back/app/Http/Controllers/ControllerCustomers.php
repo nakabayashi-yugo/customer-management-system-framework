@@ -3,15 +3,16 @@
     namespace App\Http\Controllers;
 
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Session;
     use App\Services\ServiceCustomers; // サービスを使う
 
-    use App\Dto\DtoCustomersList;
-    use App\Dto\DtoCustomersCount;
-    use App\Dto\DtoCustomersDelete;
-    use App\Dto\DtoCustomersEntry;
-    use App\Dto\DtoCustomersEdit;
-    use App\Dto\DtoCustomersGetCustomer;
-    use App\Dto\DtoCustomersGetCustomers;
+    use App\Dtos\Customers\DtoCustomersList;
+    use App\Dtos\Customers\DtoCustomersCount;
+    use App\Dtos\Customers\DtoCustomersDelete;
+    use App\Dtos\Customers\DtoCustomersEntry;
+    use App\Dtos\Customers\DtoCustomersEdit;
+    use App\Dtos\Customers\DtoCustomersGetCustomer;
+    use App\Dtos\Customers\DtoCustomersGetCustomers;
 
     class ControllerCustomers extends Controller
     {
@@ -24,7 +25,10 @@
         public function customerList(Request $request)
         {
             $dto = new DtoCustomersList($request->all());
-            $result = $this->service->customerList(get_object_vars($dto));
+            $dto->search_data->user_id = Session::get('user_id');
+            $dto_array = objectToArray($dto);
+            file_put_contents("./debug_log.txt", "ログイン直後じゃないです:" . print_r($dto_array, true) . "\n");
+            $result = $this->service->customerList($dto_array);
             return response()->json($result);
         }
         //顧客件数取得
@@ -68,6 +72,15 @@
             $dto = new DtoCustomersGetCustomers($request->all());
             $result = $this->service->getCustomers(get_object_vars($dto));
             return response()->json($result);
+        }
+
+        function objectToArray($obj) {
+            if (is_object($obj)) $obj = get_object_vars($obj);
+            if (is_array($obj)) {
+                return array_map('objectToArray', $obj);
+            } else {
+                return $obj;
+            }
         }
     }
 ?>

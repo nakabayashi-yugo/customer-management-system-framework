@@ -5,11 +5,11 @@
     use Illuminate\Http\Request;
     use App\Services\ServiceCompanies;
 
-    use App\Dto\DtoCompaniesGetCompany;
-    use App\Dto\DtoCompaniesList;
-    use App\Dto\DtoCompaniesDelete;
-    use App\Dto\DtoCompaniesEntry;
-    use App\Dto\DtoCompaniesEdit;
+    use App\Dtos\Companies\DtoCompaniesGetCompany;
+    use App\Dtos\Companies\DtoCompaniesList;
+    use App\Dtos\Companies\DtoCompaniesDelete;
+    use App\Dtos\Companies\DtoCompaniesEntry;
+    use App\Dtos\Companies\DtoCompaniesEdit;
 
     class ControllerCompanies extends Controller
     {
