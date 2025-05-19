@@ -28,9 +28,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UserTopPage from './pages/view/page_users/user_top';
 import UserLoginPage from './pages/view/page_users/user_login';
 import UserEntryPage from './pages/view/page_users/user_entry';
-import CustTopPage from './pages/view/page_cms/customer_top';
-import CustListPage from './pages/view/page_cms/customer_list';
-import CustEntryPage from './pages/view/page_cms/customer_entry';
+import CustTopPage from './pages/view/page_cms/customers/customer_top';
+import CustListPage from './pages/view/page_cms/customers/customer_list';
+import CustEntryPage from './pages/view/page_cms/customers/customer_entry';
+import CustEditPage from './pages/view/page_cms/customers/customer_edit';
 import "./pages/view/css/page_style.css";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
         <Route path="/cust_top" element={<CustTopPage />} />
         <Route path="/cust_list" element={<CustListPage />} />
         <Route path="/cust_entry" element={<CustEntryPage />} />
+        <Route path="/cust_edit/:cust_id" element={<CustEditPage />} />
       </Routes>
     </Router>
   );

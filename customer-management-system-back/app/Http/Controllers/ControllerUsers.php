@@ -18,7 +18,7 @@
         {
             //dto生成
             $dto = new DtoUsersLogin($request->all());
-            $result = $this->service->userLogin(get_object_vars($dto));
+            $result = $this->service->userLogin($dto);
 
             return response()->json($result);
         }
@@ -26,7 +26,7 @@
         public function userEntry(Request $request)
         {
             $dto = new DtoUsersEntry($request->all());
-            $result = $this->service->userEntry(get_object_vars($dto));
+            $result = $this->service->userEntry($dto);
 
             return response()->json($result);
         }

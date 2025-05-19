@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { PrefetchPageLinks, useNavigate } from 'react-router-dom';
+import { dtoCustomersEntry } from "./../../../dto/customers/dto_customers_entry.ts";
+import { getCompanies } from "./../companies/other/companies_service.js";
 
 function CustomerEntryPage() {
   const navigate = useNavigate();
@@ -11,10 +13,49 @@ function CustomerEntryPage() {
   const [sex, setSex] = useState('男性');
   const [bornDate, setBornDate] = useState('');
   const [company, setCompany] = useState('');
+  
+  //会社一覧データ
+  const [companiesData, setCompaniesData] = useState([]);
+
+  useEffect(() => {
+      const fetchCompanies = async () => {
+          setCompaniesData(await getCompanies());
+      }
+      fetchCompanies();
+  }, []);  // ← 空配列にすると初回だけ実行される
 
   // ここにまとめる
-  const handleRegister = () => {
+  const onEntry = async () => {
     console.log('登録処理', { name, nameKana, mailAddress, phoneNumber, sex, bornDate, company });
+    //apiをぶったたく！！
+    const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/entry";
+    try {
+      const send_data = new dtoCustomersEntry();
+      send_data.cust_name = name;
+      send_data.cust_name_kana = nameKana;
+      send_data.mail_address = mailAddress;
+      send_data.phone_number = phoneNumber;
+      send_data.sex = sex;
+      send_data.born_date = bornDate;
+      send_data.company_id = company;
+
+      const response_api = await fetch(api_url, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(send_data),
+          credentials: 'include',
+      });
+      const result = await response_api.json();
+      console.log(result);
+      if(result.success == true) 
+      {
+          alert("顧客情報の登録に成功しました。");
+      }
+    } catch(error) {
+        console.error("登録失敗", error);
+    }
   };
 
   const handleCompanyListOpen = () => {
@@ -82,6 +123,11 @@ function CustomerEntryPage() {
                     <td className="entry-input-form" id="entry-input-company" width="100px">
                         <select id="search_company" value={company} onChange={(e) => setCompany(e.target.value)}>
                         <option value="">会社を選択</option>
+                        {companiesData.map((companyItem) => (
+                            <option key={companyItem.company_id} value={companyItem.company_id}>
+                                {companyItem.company_name}
+                            </option>
+                        ))}
                         </select>
                     </td>
                 </tr>
@@ -94,7 +140,7 @@ function CustomerEntryPage() {
         </div>
 
         <div className="content-entry">
-          <button className="entry-button button" id="entry-button-action" type="button" onClick={handleRegister}>登録</button>
+          <button className="entry-button button" id="entry-button-action" type="button" onClick={onEntry}>登録</button>
         </div>
 
         <div className="content-return">

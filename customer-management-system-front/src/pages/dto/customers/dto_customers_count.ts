@@ -4,6 +4,6 @@ export class dtoCustomersCount {
     search_data: dtoCustomersSearch;
 
     constructor(data: any) {
-        this.search_data = new dtoCustomersSearch(data.search_data);
+        this.search_data = data;
     }
 }

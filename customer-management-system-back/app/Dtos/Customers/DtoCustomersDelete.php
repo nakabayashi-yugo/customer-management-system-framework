@@ -1,14 +1,23 @@
 <?php
-    namespace App\Dtos\Customers;
-    class DtoCustomersDelete
-    {
-        public int $user_id;
-        public int $cust_id;
+namespace App\Dtos\Customers;
 
-        public function __construct(array $data)
-        {
-            $this->user_id = $data["user_id"];
-            $this->cust_id = $data["cust_id"];
-        }
+class DtoCustomersDelete
+{
+    public ?int $user_id;
+    public ?int $cust_id;
+
+    public function __construct(array $data)
+    {
+        $this->user_id = $data["user_id"] ?? null;
+        $this->cust_id = $data["cust_id"] ?? null;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'user_id' => $this->user_id,
+            'cust_id' => $this->cust_id,
+        ];
+    }
+}
 ?>

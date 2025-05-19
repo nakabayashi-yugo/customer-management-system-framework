@@ -1,61 +1,62 @@
 <?php
-    namespace App\Services;
+namespace App\Services;
 
-    use App\Models\ModelCompanies;
+use App\Models\ModelCompanies;
+use App\Dtos\Companies\DtoCompaniesGetCompany;
+use App\Dtos\Companies\DtoCompaniesList;
+use App\Dtos\Companies\DtoCompaniesDelete;
+use App\Dtos\Companies\DtoCompaniesEntry;
+use App\Dtos\Companies\DtoCompaniesEdit;
 
-    class ServiceCompanies
+class ServiceCompanies
+{
+    private $model;
+
+    public function __construct()
     {
-        private $model;
-
-        public function __construct()
-        {
-            $this->model = new ModelCompanies();
-        }
-        //会社IDの会社取得
-        public function getCompany($data)
-        {
-            $result = $this->model->getCompany($data);
-            return $result;
-        }
-        
-        //会社一覧取得
-        public function companyList($data)
-        {
-            $result = $this->model->companyList($data);
-            return $result;
-        }
-        //会社削除
-        public function companyDelete($data)
-        {
-            $result = $this->model->deleteValidCheck($data);
-            if($result["valid"] == false)
-            {
-                return $result;
-            }
-            $result = $this->model->companyDelete($data);
-            return $result;
-        }
-        //会社登録
-        public function companyEntry($data)
-        {
-            $result = $this->model->validCheck($data);
-            if($result["valid"] == false)
-            {
-                return $result;
-            }
-            $result = $this->model->companyEntry($data);
-            return $result;
-        }
-        //会社編集
-        public function companyEdit($data)
-        {
-            $result = $this->model->validCheck($data);
-            if($result["valid"] == false)
-            {
-                return $result;
-            }
-            $result = $this->model->companyEdit($data);
-            return $result;
-        }
+        $this->model = new ModelCompanies();
     }
+
+    // 会社IDの会社取得
+    public function getCompany(DtoCompaniesGetCompany $dto)
+    {
+        return $this->model->getCompany($dto);
+    }
+
+    // 会社一覧取得
+    public function companyList(DtoCompaniesList $dto)
+    {
+        return $this->model->companyList($dto);
+    }
+
+    // 会社削除
+    public function companyDelete(DtoCompaniesDelete $dto)
+    {
+        $result = $this->model->deleteValidCheck($dto);
+        if ($result["valid"] == false) {
+            return $result;
+        }
+        return $this->model->companyDelete($dto);
+    }
+
+    // 会社登録
+    public function companyEntry(DtoCompaniesEntry $dto)
+    {
+        $result = $this->model->validCheck($dto);
+        if ($result["valid"] == false) {
+            return $result;
+        }
+        return $this->model->companyEntry($dto);
+    }
+
+    // 会社編集
+    public function companyEdit(DtoCompaniesEdit $dto)
+    {
+        $result = $this->model->validCheck($dto);
+        if ($result["valid"] == false) {
+            return $result;
+        }
+        return $this->model->companyEdit($dto);
+    }
+}
 ?>

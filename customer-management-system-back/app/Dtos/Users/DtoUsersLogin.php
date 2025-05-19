@@ -10,5 +10,13 @@
             $this->user_name = $data["user_name"];
             $this->passwd = $data["passwd"];
         }
+
+        public function toArray(): array
+        {
+            return [
+                "user_name" => $this->user_name,
+                "passwd" => $this->passwd,
+            ];
+        }
     }
 ?>

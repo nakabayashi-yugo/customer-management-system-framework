@@ -3,6 +3,7 @@
     namespace App\Http\Controllers;
 
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Session;
     use App\Services\ServiceCompanies;
 
     use App\Dtos\Companies\DtoCompaniesGetCompany;
@@ -21,7 +22,8 @@
         public function getCompany(Request $request)
         {
             $dto = new DtoCompaniesGetCompany($request->all());
-            $result = $this->service->getCompany(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->getCompany($dto);
             return response()->json($result);
         }
         
@@ -29,28 +31,32 @@
         public function companyList(Request $request)
         {
             $dto = new DtoCompaniesList($request->all());
-            $result = $this->service->companyList(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->companyList($dto);
             return response()->json($result);
         }
         //会社削除
         public function companyDelete(Request $request)
         {
             $dto = new DtoCompaniesDelete($request->all());
-            $result = $this->service->companyDelete(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->companyDelete($dto);
             return response()->json($result);
         }
         //会社登録
         public function companyEntry(Request $request)
         {
             $dto = new DtoCompaniesEntry($request->all());
-            $result = $this->service->companyEntry(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->companyEntry($dto);
             return response()->json($result);
         }
         //会社編集
         public function companyEdit(Request $request)
         {
             $dto = new DtoCompaniesEdit($request->all());
-            $result = $this->service->companyEdit(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->companyEdit($dto);
             return response()->json($result);
         }
     }

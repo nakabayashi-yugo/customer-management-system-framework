@@ -8,14 +8,14 @@ export class dtoCustomersEntry {
     company_id: number;
     born_date: string;
 
-    constructor(data: any) {
-        this.user_id = data.user_id;
-        this.cust_name = data.cust_name;
-        this.cust_name_kana = data.cust_name_kana;
-        this.mail_address = data.mail_address;
-        this.phone_number = data.phone_number;
-        this.sex = data.sex;
-        this.company_id = data.company_id;
-        this.born_date = data.born_date;
+    constructor(data?: any) {
+        this.user_id = data?.user_id ?? 0;
+        this.cust_name = data?.cust_name ?? '';
+        this.cust_name_kana = data?.cust_name_kana ?? '';
+        this.mail_address = data?.mail_address ?? '';
+        this.phone_number = data?.phone_number ?? '';
+        this.sex = data?.sex ?? '';
+        this.company_id = data?.company_id ?? 0;
+        this.born_date = data?.born_date ?? '';
     }
 }

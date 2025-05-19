@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { dtoCustomersList } from "./../../dto/customers/dto_customers_list.ts";
+import { dtoCustomersList } from "./../../../dto/customers/dto_customers_list.ts";
+import { dtoCustomersCount } from "./../../../dto/customers/dto_customers_count.ts";
+import { dtoCustomersDelete } from "./../../../dto/customers/dto_customers_delete.ts";
+import { onCount } from "./other/customer_service.js";
+import { getCompanies } from "./../companies/other/companies_service.js";
 
 function CustomerListPage() {
     const navigate = useNavigate();
 
+    //検索項目
     const [name, setName] = useState('');
     const [nameKana, setNameKana] = useState('');
     const [sex, setSex] = useState('');
@@ -20,35 +25,36 @@ function CustomerListPage() {
     const month_list = Array.from({length: 12}, (_, i) => i + 1);
     const date_list = Array.from({length: 31}, (_, i) => i + 1);
 
-    //一覧データ
-    const list_data = [];
+    //ページャー機能関連
+    const [nowPage, setNowPage] = useState(1);
+    const [maxPage, setMaxPage] = useState(1);  // APIから取得する想定
+    const [dispNum, setDispNum] = useState(10);
+    const [pagerLinks, setPagerLinks] = useState([]);
 
-    const [takeListData, setTakeListData] = useState({
-        search_data: {},
-        sort_data: {},
-    });
+    //一覧データ
+    const [listData, setListData] = useState([]);
+    //会社一覧データ
+    const [companiesData, setCompaniesData] = useState([]);
+
+    const [takeListData, setTakeListData] = useState(new dtoCustomersList());
 
     useEffect(() => {
         console.log("画面きたから初回だけ検索しとくね");
-        onDto();
+        const fetchCompanies = async () => {
+            setCompaniesData(await getCompanies());
+        }
+        fetchCompanies();
         onSearch();
-        onSort("cust_id", "昇順");  // 必要なら
     }, []);  // ← 空配列にすると初回だけ実行される
 
-    // 変更されるたびにonListが走る
     useEffect(() => {
         onList();
+        updatePager(takeListData.page_id || 1, takeListData);
     }, [takeListData]);
 
-    const onDto = () => {
-        //dtoからデータ取得
-        //take_list_dataにいれる
-        setTakeListData(new dtoCustomersList());
-        console.log("DTO初期化", takeListData);
-    }
     const onSearch = () => {
-        setTakeListData(prev => ({
-            ...prev,
+        const newData = {
+            ...takeListData,
             search_data: {
                 cust_name: name,
                 cust_name_kana: nameKana,
@@ -58,11 +64,10 @@ function CustomerListPage() {
                 born_date: bornDate,
                 company_id: company
             }
-        }));
-        console.log("検索します", name, nameKana, sex, bornYear, bornMonth, bornDate, company);
+        };
+        setTakeListData(newData);
     };
     const onList = async () => {
-        console.log("リスト出すぞー", takeListData);
         try {
             const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/list";
             const response_api = await fetch(api_url, {
@@ -75,13 +80,9 @@ function CustomerListPage() {
             });
             const result = await response_api.json();
             console.log(result);
-            if(result.success == true)
+            if(result && Array.isArray(result)) 
             {
-                
-            }
-            else
-            {
-                throw new Error("なんでかは知らないよ");
+                setListData(result);
             }
         } catch(error) {
             console.error("一覧取得失敗", error);
@@ -95,22 +96,120 @@ function CustomerListPage() {
                 sort_order: _order || prev.sort_data.sort_order
             }
         }));
-        console.log("ソートするぞー", _key, _order);
     }
     const onNumChange = (_num) => {
-        setTakeListData(prev => ({
-            ...prev,
-            disp_num: _num,
-        }));
-        console.log("表示件数かえるぞー", _num);
+        setDispNum(Number(_num));  // ← 数値化して保存
+
+        const newData = {
+            ...takeListData,
+            disp_num: Number(_num),
+        };
+        setDispNum(_num);
+        setTakeListData(newData);
+    };
+    const onPager = async (page) => {
+        setNowPage(page);
+        const newData = {
+            ...takeListData,
+            page_id: page,
+        }
+        setTakeListData(newData);
+        updatePager(page, newData);
+    };
+    const updatePager = async (page, data = takeListData) => {
+        let count_data = new dtoCustomersCount(data.search_data);
+        const custNum = await onCount(count_data);
+        const newMaxPage = Math.ceil(custNum / dispNum);
+        setMaxPage(newMaxPage);
+
+        const pageLinks = generatePagination(page, newMaxPage); // ← page を直接使う
+        setPagerLinks(pageLinks);
     }
+    const renderPager = () => {
+        return (
+            <div className="list-pager">
+                {pagerLinks.map((pageLink, index) => (
+                    typeof pageLink === "number" ? (
+                        pageLink === nowPage ? (
+                            <p key={index} className="list-pager-link">{pageLink}</p>
+                        ) : (
+                            <a key={index} href="#" onClick={(e) => { e.preventDefault(); onPager(pageLink); }}>
+                                <p className="list-pager-link">{pageLink}</p>
+                            </a>
+                        )
+                    ) : (
+                        <p key={index} className="list-pager-link">{pageLink}</p>
+                    )
+                ))}
+            </div>
+        );
+    };
+    function generatePagination(nowPage, maxPage) {
+        const pageLinks = [];
+        const neighbor_disp_num = 2;            //表示されてるページの何ページ前後までページャーとして表示するか
+
+        if (nowPage > neighbor_disp_num + 1) {     //表示されているページが最初のページからneighbor_disp_num分離れていたら
+            pageLinks.push(1);                     //最初のページ追加
+            if (nowPage > neighbor_disp_num + 2) { //表示されているページが最初のページからneighbor_disp_num分に加えひとつでも多くページを離れていたら
+                pageLinks.push("...");                      //...追加
+            }         
+        }
+
+        //表示されているページから前後neighbor_disp_num分の値でループ
+        for (let i = nowPage - neighbor_disp_num; i <= nowPage + neighbor_disp_num; i++) {
+            if (i >= 1 && i < maxPage) {           //iがページャーの範囲から抜けてないかチェック
+                pageLinks.push(i);                          //抜けてなかったら追加
+            }
+        }
+
+        if (nowPage < maxPage - neighbor_disp_num) {        //表示されているページが最後のページからneighbor_disp_num前のページより離れていたら
+            if (nowPage < maxPage - neighbor_disp_num - 1) {    //表示されているページが最後のページからneighbor_disp_num分に加えひとつでも多くページを離れていたら
+                pageLinks.push("...");                      //...追加
+            }
+        }
+        pageLinks.push(maxPage);                        //最後のページ追加
+
+        return pageLinks;
+    }
+
+    const onDelete = async (cust_id) => {
+        if (!window.confirm("本当に削除しますか？")) return;
+
+        const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/delete";
+        try {
+            const send_data = new dtoCustomersDelete();
+            send_data.cust_id = cust_id;
+            console.log(send_data);
+
+            const response = await fetch(api_url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(send_data),
+                credentials: 'include',
+            });
+            const result = await response.json();
+            if (result.success) {
+                onList();  // 削除成功後に一覧更新
+            } else {
+                alert("削除に失敗しました");
+            }
+        } catch (error) {
+            console.error("削除失敗", error);
+            alert("削除に失敗しました");
+        }
+    };
 
     const handleToTop = () => {
         navigate('/cust_top');
     };
     const handleToEntry = () => {
         navigate("/cust_entry");
-    }  
+    }
+    const handleToEdit = (cust_id) => {
+        navigate(`/cust_edit/${cust_id}`);
+    }
 
     return (
         <div className="main-wrapper">
@@ -137,7 +236,7 @@ function CustomerListPage() {
                         </div>
 
                         <select className="search-sex" onChange={(e) => setSex(e.target.value)}>
-                            <option value="全て">全て</option>
+                            <option value="">全て</option>
                             <option value="男性">男性</option>
                             <option value="女性">女性</option>
                             <option value="その他">その他</option>
@@ -176,7 +275,14 @@ function CustomerListPage() {
                             </select>
                         </div>
 
-                        <select className="search-company" onChange={(e) => setCompany(e.target.value)}></select>
+                        <select className="search-company" onChange={(e) => setCompany(e.target.value)}>
+                            <option value="">全て</option>
+                            {companiesData.map((companyItem) => (
+                                <option key={companyItem.company_id} value={companyItem.company_id}>
+                                    {companyItem.company_name}
+                                </option>
+                            ))}
+                        </select>
 
                         <button className="search-button button" onClick={onSearch}>検索</button>
                         <button className="reset-button button" id="reset">リセット</button>
@@ -235,13 +341,31 @@ function CustomerListPage() {
                         </tr>
                         </thead>
                         <tbody className="list-customers-table-item" id="list-customers-table-item">
-                        {/* データをmapで展開 */}
+                            {listData.map((customer, index) => (
+                                <tr key={index}>
+                                    <td>{customer.cust_id}</td>
+                                    <td>{customer.cust_name}</td>
+                                    <td>{customer.cust_name_kana}</td>
+                                    <td>{customer.mail_address}</td>
+                                    <td>{customer.phone_number}</td>
+                                    <td>{customer.sex}</td>
+                                    <td>{customer.company_name}</td>
+                                    <td>{customer.insert_at}</td>
+                                    <td>{customer.update_at}</td>
+                                    <td>
+                                        <button onClick={() => handleToEdit(customer.cust_id)}>編集</button>
+                                    </td>
+                                    <td>
+                                        <button onClick={() => onDelete(customer.cust_id)}>削除</button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                     </div>
 
                     <div className="list-pager" id="list-pager">
-                    {/* ページャー機能 */}
+                    {renderPager()}
                     </div>
                 </div>
 

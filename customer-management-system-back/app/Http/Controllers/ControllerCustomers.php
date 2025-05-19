@@ -24,63 +24,60 @@
         //一覧取得
         public function customerList(Request $request)
         {
+            //file_put_contents("./debug_log.txt", "受け取りデータ:" . print_r($dto, true) . "\n");
             $dto = new DtoCustomersList($request->all());
             $dto->search_data->user_id = Session::get('user_id');
-            $dto_array = objectToArray($dto);
-            file_put_contents("./debug_log.txt", "ログイン直後じゃないです:" . print_r($dto_array, true) . "\n");
-            $result = $this->service->customerList($dto_array);
+            $result = $this->service->customerList($dto);
             return response()->json($result);
         }
         //顧客件数取得
         public function customerCount(Request $request)
         {
             $dto = new DtoCustomersCount($request->all());
-            $result = $this->service->customerCount(get_object_vars($dto));
+            $dto->search_data->user_id = Session::get("user_id");
+            $result = $this->service->customerCount($dto);
             return response()->json($result);
         }
         //顧客削除
         public function customerDelete(Request $request)
         {
             $dto = new DtoCustomersDelete($request->all());
-            $result = $this->service->customerDelete(get_object_vars($dto));
+            file_put_contents("./debug_log.txt", "受け取りデータ:" . print_r($dto, true) . "\n");
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->customerDelete($dto);
             return response()->json($result);
         }
         //顧客登録
         public function customerEntry(Request $request)
         {
             $dto = new DtoCustomersEntry($request->all());
-            $result = $this->service->customerEntry(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->customerEntry($dto);
             return response()->json($result);
         }
         //顧客編集
         public function customerEdit(Request $request)
         {
             $dto = new DtoCustomersEdit($request->all());
-            $result = $this->service->customerEdit(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->customerEdit($dto);
             return response()->json($result);
         }
         //顧客IDの顧客取得
         public function getCustomer(Request $request)
         {
             $dto = new DtoCustomersGetCustomer($request->all());
-            $result = $this->service->getCustomer(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->getCustomer($dto);
             return response()->json($result);
         }
         //顧客全取得
         public function getCustomers(Request $request)
         {
             $dto = new DtoCustomersGetCustomers($request->all());
-            $result = $this->service->getCustomers(get_object_vars($dto));
+            $dto->user_id = Session::get("user_id");
+            $result = $this->service->getCustomers($dto);
             return response()->json($result);
-        }
-
-        function objectToArray($obj) {
-            if (is_object($obj)) $obj = get_object_vars($obj);
-            if (is_array($obj)) {
-                return array_map('objectToArray', $obj);
-            } else {
-                return $obj;
-            }
         }
     }
 ?>
