@@ -1,6 +1,1 @@
-受け取りデータ:App\Dtos\Customers\DtoCustomersDelete Object
-(
-    [user_id] => 0
-    [cust_id] => 85
-)
-
+ログイン直後です:6

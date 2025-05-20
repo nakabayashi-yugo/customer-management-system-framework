@@ -1,5 +1,6 @@
 export class dtoCustomersEdit {
     user_id: number;
+    cust_id: number;
     cust_name: string;
     cust_name_kana: string;
     mail_address: string;
@@ -10,6 +11,7 @@ export class dtoCustomersEdit {
 
     constructor(data?: any) {
         this.user_id = data?.user_id ?? 0;
+        this.cust_id = data?.cust_id ?? 0;
         this.cust_name = data?.cust_name ?? '';
         this.cust_name_kana = data?.cust_name_kana ?? '';
         this.mail_address = data?.mail_address ?? '';

@@ -39,7 +39,6 @@ function CustomerListPage() {
     const [takeListData, setTakeListData] = useState(new dtoCustomersList());
 
     useEffect(() => {
-        console.log("画面きたから初回だけ検索しとくね");
         const fetchCompanies = async () => {
             setCompaniesData(await getCompanies());
         }
@@ -79,7 +78,6 @@ function CustomerListPage() {
                 credentials: 'include',
             });
             const result = await response_api.json();
-            console.log(result);
             if(result && Array.isArray(result)) 
             {
                 setListData(result);

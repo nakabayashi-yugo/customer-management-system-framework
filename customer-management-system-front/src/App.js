@@ -33,6 +33,7 @@ import CustListPage from './pages/view/page_cms/customers/customer_list';
 import CustEntryPage from './pages/view/page_cms/customers/customer_entry';
 import CustEditPage from './pages/view/page_cms/customers/customer_edit';
 import "./pages/view/css/page_style.css";
+import "./pages/view/css/modal_style.css";
 
 function App() {
   return (

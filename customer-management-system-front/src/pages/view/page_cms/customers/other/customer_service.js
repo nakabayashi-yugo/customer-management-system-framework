@@ -39,7 +39,6 @@ export async function getCustomer(cust_id)
             credentials: 'include',
         });
         const result = await response.json();
-        console.log(result);
         return result ?? null;
     } catch (error) {
         console.error("顧客取得失敗", error);

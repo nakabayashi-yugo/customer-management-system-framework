@@ -2,8 +2,22 @@ import { useState, useEffect } from 'react';
 import { PrefetchPageLinks, useNavigate } from 'react-router-dom';
 import { dtoCustomersEntry } from "./../../../dto/customers/dto_customers_entry.ts";
 import { getCompanies } from "./../companies/other/companies_service.js";
+//会社モーダル画面関連
+import useModalController from "./../companies/modal_controller.js";
+import CompaniesListModal from "./../companies/modal/modal_company_list.js";
+import CompaniesEntryModal from "./../companies/modal/modal_company_entry.js";
+import CompaniesEditModal from "./../companies/modal/modal_company_edit.js";
+
 
 function CustomerEntryPage() {
+  const {
+    currentModal,
+    editCompanyId,
+    openCompanyList,
+    openCompanyEntry,
+    openCompanyEdit,
+    closeModal,
+  } = useModalController();
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -60,6 +74,7 @@ function CustomerEntryPage() {
 
   const handleCompanyListOpen = () => {
     console.log('モーダル開く');
+    openCompanyList();
   };
 
   const handleBackToList = () => {
@@ -146,6 +161,23 @@ function CustomerEntryPage() {
         <div className="content-return">
           <button className="return-button button" id="return-button" type="button" onClick={handleBackToList}>一覧へ</button>
         </div>
+        <CompaniesListModal
+          isOpen={currentModal === "list"}
+          onClose={closeModal}
+          onEntry={openCompanyEntry}
+          onEdit={openCompanyEdit}
+        />
+        <CompaniesEntryModal
+          isOpen={currentModal === "entry"}
+          onClose={closeModal}
+          onBack={openCompanyList}
+        />
+        <CompaniesEditModal
+          isOpen={currentModal === "edit"}
+          companyId={editCompanyId}
+          onClose={closeModal}
+          onBack={openCompanyList}
+        />
       </div>
     </div>
   );

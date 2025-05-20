@@ -6,7 +6,21 @@ import { getCustomer } from "./other/customer_service.js";
 
 import { dtoCustomersEdit } from "./../../../dto/customers/dto_customers_edit.ts";
 
+//会社モーダル画面関連
+import useModalController from "./../companies/modal_controller.js";
+import CompaniesListModal from "./../companies/modal/modal_company_list.js";
+import CompaniesEntryModal from "./../companies/modal/modal_company_entry.js";
+import CompaniesEditModal from "./../companies/modal/modal_company_edit.js";
+
 function CustomerEditPage() {
+    const {
+        currentModal,
+        editCompanyId,
+        openCompanyList,
+        openCompanyEntry,
+        openCompanyEdit,
+        closeModal,
+    } = useModalController();
     const { cust_id } = useParams();
     const navigate = useNavigate();
 
@@ -25,6 +39,11 @@ function CustomerEditPage() {
         const fetchCompanies = async () => {
             setCompaniesData(await getCompanies());
             const customer = await getCustomer(cust_id);
+            if(!customer || Object.keys(customer).length === 0)
+            {
+                alert("指定の顧客が見つかりませんでした。");
+                navigate("/cust_list");
+            }
             setName(customer.cust_name);
             setNameKana(customer.cust_name_kana);
             setMailAddress(customer.mail_address);
@@ -38,11 +57,11 @@ function CustomerEditPage() {
 
     // ここにまとめる
     const onEdit = async () => {
-        console.log('編集処理', { name, nameKana, mailAddress, phoneNumber, sex, bornDate, company });
         //apiをぶったたく！！
         const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/edit";
         try {
         const send_data = new dtoCustomersEdit();
+        send_data.cust_id = cust_id;
         send_data.cust_name = name;
         send_data.cust_name_kana = nameKana;
         send_data.mail_address = mailAddress;
@@ -72,6 +91,7 @@ function CustomerEditPage() {
 
     const handleCompanyListOpen = () => {
         console.log('モーダル開く');
+        openCompanyList();
     };
 
     const handleBackToList = () => {
@@ -152,12 +172,30 @@ function CustomerEditPage() {
             </div>
 
             <div className="content-edit">
-            <button className="edit-button button" id="edit-button-action" type="button" onClick={onEdit}>登録</button>
+            <button className="edit-button button" id="edit-button-action" type="button" onClick={onEdit}>編集</button>
             </div>
 
             <div className="content-return">
             <button className="return-button button" id="return-button" type="button" onClick={handleBackToList}>一覧へ</button>
             </div>
+            <CompaniesListModal
+            isOpen={currentModal === "list"}
+            onClose={closeModal}
+            onEntryOpen={openCompanyEntry}
+            />
+            <CompaniesEntryModal
+            isOpen={currentModal === "entry"}
+            onClose={closeModal}
+            onBack={closeModal}
+            onRegister={() => console.log("登録")}
+            />
+            <CompaniesEditModal
+            isOpen={currentModal === "edit"}
+            companyId={editCompanyId}
+            onClose={closeModal}
+            onBack={closeModal}
+            onEdit={() => console.log("編集")}
+            />
         </div>
         </div>
     );
