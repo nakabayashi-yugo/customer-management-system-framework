@@ -1,1 +1,6 @@
-ログイン直後です:6
+受け取りデータ:App\Dtos\Users\DtoUsersEntry Object
+(
+    [user_name] => nakabayashia
+    [passwd] => aaaaaaaa
+)
+

@@ -78,9 +78,9 @@ function CustomerListPage() {
                 credentials: 'include',
             });
             const result = await response_api.json();
-            if(result && Array.isArray(result)) 
+            if(result.data && Array.isArray(result.data)) 
             {
-                setListData(result);
+                setListData(result.data);
             }
         } catch(error) {
             console.error("一覧取得失敗", error);
@@ -177,7 +177,6 @@ function CustomerListPage() {
         try {
             const send_data = new dtoCustomersDelete();
             send_data.cust_id = cust_id;
-            console.log(send_data);
 
             const response = await fetch(api_url, {
                 method: "POST",
@@ -351,10 +350,10 @@ function CustomerListPage() {
                                     <td>{customer.insert_at}</td>
                                     <td>{customer.update_at}</td>
                                     <td>
-                                        <button onClick={() => handleToEdit(customer.cust_id)}>編集</button>
+                                        <button className="list-costomers-table-edit-button edit-button button" onClick={() => handleToEdit(customer.cust_id)}>編集</button>
                                     </td>
                                     <td>
-                                        <button onClick={() => onDelete(customer.cust_id)}>削除</button>
+                                        <button className="list-customers-table-delete-button delete-button button" onClick={() => onDelete(customer.cust_id)}>削除</button>
                                     </td>
                                 </tr>
                             ))}

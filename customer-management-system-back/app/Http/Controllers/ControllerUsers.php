@@ -19,8 +19,18 @@
             //dto生成
             $dto = new DtoUsersLogin($request->all());
             $result = $this->service->userLogin($dto);
+            
+            if ($this->service->hasErrors()) {
+                return response()->json([
+                    'success' => false,
+                    'errors'  => $this->service->getErrorCodes(),
+                ], $this->service->getHttpStatus());
+            }
 
-            return response()->json($result);
+            return response()->json([
+                'success' => true,
+                'data'    => $result,
+            ]);
         }
 
         public function userEntry(Request $request)
@@ -28,7 +38,17 @@
             $dto = new DtoUsersEntry($request->all());
             $result = $this->service->userEntry($dto);
 
-            return response()->json($result);
+            if ($this->service->hasErrors()) {
+                return response()->json([
+                    'success' => false,
+                    'errors'  => $this->service->getErrorCodes(),
+                ], $this->service->getHttpStatus());
+            }
+
+            return response()->json([
+                'success' => true,
+                'data'    => $result,
+            ]);
         }
     }
 ?>

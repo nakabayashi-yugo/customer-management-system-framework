@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PrefetchPageLinks, useNavigate } from 'react-router-dom';
 import { dtoCustomersEntry } from "./../../../dto/customers/dto_customers_entry.ts";
 import { getCompanies } from "./../companies/other/companies_service.js";
@@ -18,6 +18,8 @@ function CustomerEntryPage() {
     openCompanyEdit,
     closeModal,
   } = useModalController();
+  const prevModal = useRef(currentModal);
+
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -37,6 +39,17 @@ function CustomerEntryPage() {
       }
       fetchCompanies();
   }, []);  // ← 空配列にすると初回だけ実行される
+
+  useEffect(() => {
+    if (prevModal.current !== null && currentModal === null) {
+        // モーダルが閉じられた瞬間
+        const fetchCompanies = async () => {
+          setCompaniesData(await getCompanies());
+        };
+        fetchCompanies();
+    }
+    prevModal.current = currentModal;
+  }, [currentModal]);
 
   // ここにまとめる
   const onEntry = async () => {
@@ -62,7 +75,6 @@ function CustomerEntryPage() {
           credentials: 'include',
       });
       const result = await response_api.json();
-      console.log(result);
       if(result.success == true) 
       {
           alert("顧客情報の登録に成功しました。");

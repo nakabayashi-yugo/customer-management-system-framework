@@ -1,9 +1,35 @@
+import { useState, useEffect } from 'react';
+
+import { dtoCompaniesEntry } from "./../../../../dto/companies/dto_companies_entry.ts";
+
 export default function CompaniesEntryModal({ isOpen, onClose, onBack }) {
-  if (!isOpen) return null;
+  const [name, setName] = useState("");
 
   const onEntry = async () => {
+    const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/companies/entry";
+    try {
+      const send_data = new dtoCompaniesEntry();
+      send_data.company_name = name;
 
+      const response_api = await fetch(api_url, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(send_data),
+          credentials: 'include',
+      });
+      const result = await response_api.json();
+      if(result.success == true) 
+      {
+          alert("顧客情報の登録に成功しました。");
+      }
+    } catch(error) {
+        console.error("登録失敗", error);
+    }
   }
+
+  if (!isOpen) return null;
 
   return (
     <div className="modal-company-entry modal" id="modal-company-entry">
@@ -22,7 +48,7 @@ export default function CompaniesEntryModal({ isOpen, onClose, onBack }) {
                 <tr className="modal-entry-input-name" style={{ height: "24px" }} align="center">
                   <th width="100px" bgcolor="#D3D3D3">会社名</th>
                   <td className="modal-entry-input-form-name" width="200px" bgcolor="#FFFFFF">
-                    <input type="text" id="modal-entry-input-name" placeholder="株式会社○○" />
+                    <input type="text" id="modal-entry-input-name" placeholder="株式会社○○" value={name} onChange={(e) => setName(e.target.value)} />
                   </td>
                 </tr>
               </tbody>

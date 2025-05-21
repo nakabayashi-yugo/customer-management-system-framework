@@ -18,14 +18,14 @@ export async function getCompany(company_id)
         });
 
         const result = await response.json();
-        return result ?? 0;  // ← 取れなかったら0を返す
+        return result.data ?? 0;  // ← 取れなかったら0を返す
     } catch (error) {
         console.error("会社情報取得失敗", error);
     }
 }
 
 //会社情報全取得
-export async function getCompanies(company_id)
+export async function getCompanies()
 {
     const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/companies/list";
     try {
@@ -42,7 +42,7 @@ export async function getCompanies(company_id)
         });
 
         const result = await response.json();
-        return result ?? 0;  // ← 取れなかったら0を返す
+        return result.data ?? 0;  // ← 取れなかったら0を返す
     } catch (error) {
         console.error("会社情報取得失敗", error);
     }

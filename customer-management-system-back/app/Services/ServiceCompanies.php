@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Services\ServiceBase;
 use App\Models\ModelCompanies;
 use App\Dtos\Companies\DtoCompaniesGetCompany;
 use App\Dtos\Companies\DtoCompaniesList;
@@ -8,12 +9,13 @@ use App\Dtos\Companies\DtoCompaniesDelete;
 use App\Dtos\Companies\DtoCompaniesEntry;
 use App\Dtos\Companies\DtoCompaniesEdit;
 
-class ServiceCompanies
+class ServiceCompanies extends ServiceBase
 {
     private $model;
 
     public function __construct()
     {
+        parent::__construct();
         $this->model = new ModelCompanies();
     }
 
@@ -32,31 +34,43 @@ class ServiceCompanies
     // 会社削除
     public function companyDelete(DtoCompaniesDelete $dto)
     {
-        $result = $this->model->deleteValidCheck($dto);
-        if ($result["valid"] == false) {
-            return $result;
+        $errors = $this->model->deleteValidCheck($dto);
+        if (!empty($errors)) {
+            $this->addErrorCodes($errors);
+            return;
         }
-        return $this->model->companyDelete($dto);
+
+        $result = $this->model->companyDelete($dto);
+        $this->addErrorCode($result['code']);
+        return $result;
     }
 
     // 会社登録
     public function companyEntry(DtoCompaniesEntry $dto)
     {
-        $result = $this->model->validCheck($dto);
-        if ($result["valid"] == false) {
-            return $result;
+        $errors = $this->model->validCheck($dto);
+        if (!empty($errors)) {
+            $this->addErrorCodes($errors);
+            return;
         }
-        return $this->model->companyEntry($dto);
+
+        $result = $this->model->companyEntry($dto);
+        $this->addErrorCode($result['code']);
+        return $result;
     }
 
     // 会社編集
     public function companyEdit(DtoCompaniesEdit $dto)
     {
-        $result = $this->model->validCheck($dto);
-        if ($result["valid"] == false) {
-            return $result;
+        $errors = $this->model->validCheck($dto);
+        if (!empty($errors)) {
+            $this->addErrorCodes($errors);
+            return;
         }
-        return $this->model->companyEdit($dto);
+
+        $result = $this->model->companyEdit($dto);
+        $this->addErrorCode($result['code']);
+        return $result;
     }
 }
 ?>

@@ -16,7 +16,7 @@ export async function onCount(data)
         });
 
         const result = await response.json();
-        return result ?? 0;  // ← 取れなかったら0を返す
+        return result.data ?? 0;  // ← 取れなかったら0を返す
     } catch (error) {
         console.error("顧客件数取得失敗：", error);
     }
@@ -39,7 +39,7 @@ export async function getCustomer(cust_id)
             credentials: 'include',
         });
         const result = await response.json();
-        return result ?? null;
+        return result.data ?? null;
     } catch (error) {
         console.error("顧客取得失敗", error);
     }

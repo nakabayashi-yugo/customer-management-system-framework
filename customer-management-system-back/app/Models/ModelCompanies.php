@@ -2,11 +2,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 use App\Dtos\Companies\DtoCompaniesGetCompany;
 use App\Dtos\Companies\DtoCompaniesList;
 use App\Dtos\Companies\DtoCompaniesDelete;
 use App\Dtos\Companies\DtoCompaniesEntry;
 use App\Dtos\Companies\DtoCompaniesEdit;
+use App\Error\ErrorCode;
 
 class ModelCompanies extends Model
 {
@@ -21,6 +23,30 @@ class ModelCompanies extends Model
     private function wrapDto($data, $class)
     {
         return $data instanceof $class ? $data : new $class($data);
+    }
+
+    public function validCheck($data): array
+    {
+        $data = (array) $data;
+
+        $rules = [
+            'company_name' => 'required|string|max:100|unique:companies,company_name',
+        ];
+
+        $validator = Validator::make($data, $rules);
+        $errorCodes = [];
+
+        if ($validator->fails()) {
+            $failedRules = $validator->failed();
+
+            if (isset($failedRules['company_name']['Required']) || isset($failedRules['company_name']['Max'])) {
+                $errorCodes[] = ErrorCode::ERR_VALID_CAMP_NAME;
+            } elseif (isset($failedRules['company_name']['Unique'])) {
+                $errorCodes[] = ErrorCode::ERR_VALID_CAMP_NAME_OVERLAP;
+            }
+        }
+
+        return $errorCodes;
     }
 
     public function getCompany($data)
@@ -72,20 +98,16 @@ class ModelCompanies extends Model
         return $updatedCount > 0 ? ["success" => true] : [];
     }
 
-    public function validCheck($data)
-    {
-        return ["valid" => true];
-    }
-
-    public function deleteValidCheck($data)
+    public function deleteValidCheck($data): array
     {
         $dto = $this->wrapDto($data, DtoCompaniesDelete::class);
-        $errors = [];
         $model_customers = new ModelCustomers();
-        $valid_customer_company_ids = $model_customers->getCompanyIds($dto->user_id);
+        $valid_customer_company_ids = $model_customers->getCustomerIncludedCompanyIds($dto->user_id);
+
         if (in_array($dto->company_id, $valid_customer_company_ids)) {
-            $errors["valid"] = false;
+            return [ErrorCode::ERR_VALID_CAMP_DELETE];
         }
-        return $errors;
+
+        return [];
     }
 }

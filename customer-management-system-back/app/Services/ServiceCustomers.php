@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\ModelCustomers;
+use App\Services\ServiceBase;
 use App\Dtos\Customers\DtoCustomersList;
 use App\Dtos\Customers\DtoCustomersCount;
 use App\Dtos\Customers\DtoCustomersDelete;
@@ -10,12 +11,13 @@ use App\Dtos\Customers\DtoCustomersEdit;
 use App\Dtos\Customers\DtoCustomersGetCustomer;
 use App\Dtos\Customers\DtoCustomersGetCustomers;
 
-class ServiceCustomers
+class ServiceCustomers extends ServiceBase
 {
     private $model;
 
     public function __construct()
     {
+        parent::__construct();
         $this->model = new ModelCustomers();
     }
 
@@ -34,27 +36,43 @@ class ServiceCustomers
     // 顧客削除
     public function customerDelete(DtoCustomersDelete $dto)
     {
-        return $this->model->customerDelete($dto);
+        $errors = $this->model->deleteValidCheck($dto);
+        if (!empty($errors)) {
+            $this->addErrorCodes($errors);
+            return;
+        }
+
+        $result = $this->model->customerDelete($dto);
+        $this->addErrorCode($result['code']);
+        return $result;
     }
 
     // 顧客登録
     public function customerEntry(DtoCustomersEntry $dto)
     {
-        $result = $this->model->validCheck($dto);
-        if ($result["valid"] == false) {
-            return $result;
+        $errors = $this->model->validCheck($dto);
+        if (!empty($errors)) {
+            $this->addErrorCodes($errors);
+            return;
         }
-        return $this->model->customerEntry($dto);
+
+        $result = $this->model->customerEntry($dto);
+        $this->addErrorCode($result['code']);
+        return $result;
     }
 
     // 顧客編集
     public function customerEdit(DtoCustomersEdit $dto)
     {
-        $result = $this->model->validCheck($dto);
-        if ($result["valid"] == false) {
-            return $result;
+        $errors = $this->model->validCheck($dto, true);
+        if (!empty($errors)) {
+            $this->addErrorCodes($errors);
+            return;
         }
-        return $this->model->customerEdit($dto);
+
+        $result = $this->model->customerEdit($dto);
+        $this->addErrorCode($result['code']);
+        return $result;
     }
 
     // 顧客IDの顧客取得
