@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { dtoUsersLogin } from "./../../dto/users/dto_users_login.ts";
+
+import { errorAlert } from "./../error_alert.js";
 
 function UserLoginPage() {
     const [username, setUsername] = useState('');
@@ -24,6 +27,9 @@ function UserLoginPage() {
                 body: JSON.stringify(send_data),
                 credentials: 'include',
             });
+            if (!response_api.ok) {
+                throw new Error("API失敗：" + response_api.status);
+            }
             const result = await response_api.json();
             if(result.success == true)
             {
@@ -32,7 +38,7 @@ function UserLoginPage() {
             }
             else
             {
-                throw new Error("なんでかは知らないよ");
+                errorAlert(result.errors);
             }
         } catch(error) {
             console.error("ログイン失敗：", error);

@@ -77,6 +77,9 @@ function CustomerListPage() {
                 body: JSON.stringify(takeListData),
                 credentials: 'include',
             });
+            if (!response_api.ok) {
+                throw new Error("API失敗：" + response_api.status);
+            }
             const result = await response_api.json();
             if(result.data && Array.isArray(result.data)) 
             {
@@ -178,7 +181,7 @@ function CustomerListPage() {
             const send_data = new dtoCustomersDelete();
             send_data.cust_id = cust_id;
 
-            const response = await fetch(api_url, {
+            const response_api = await fetch(api_url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -186,7 +189,10 @@ function CustomerListPage() {
                 body: JSON.stringify(send_data),
                 credentials: 'include',
             });
-            const result = await response.json();
+            if (!response_api.ok) {
+                throw new Error("API失敗：" + response_api.status);
+            }
+            const result = await response_api.json();
             if (result.success) {
                 onList();  // 削除成功後に一覧更新
             } else {
@@ -274,7 +280,7 @@ function CustomerListPage() {
 
                         <select className="search-company" onChange={(e) => setCompany(e.target.value)}>
                             <option value="">全て</option>
-                            {companiesData.map((companyItem) => (
+                            {Array.isArray(companiesData) && companiesData.map((companyItem) => (
                                 <option key={companyItem.company_id} value={companyItem.company_id}>
                                     {companyItem.company_name}
                                 </option>

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { PrefetchPageLinks, useNavigate } from 'react-router-dom';
 import { dtoCustomersEntry } from "./../../../dto/customers/dto_customers_entry.ts";
 import { getCompanies } from "./../companies/other/companies_service.js";
+import { validCheck } from './other/customer_service.js';
+import { errorAlert } from "./../../error_alert.js";
 //会社モーダル画面関連
 import useModalController from "./../companies/modal_controller.js";
 import CompaniesListModal from "./../companies/modal/modal_company_list.js";
@@ -53,7 +55,6 @@ function CustomerEntryPage() {
 
   // ここにまとめる
   const onEntry = async () => {
-    console.log('登録処理', { name, nameKana, mailAddress, phoneNumber, sex, bornDate, company });
     //apiをぶったたく！！
     const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/entry";
     try {
@@ -66,6 +67,14 @@ function CustomerEntryPage() {
       send_data.born_date = bornDate;
       send_data.company_id = company;
 
+      //フロント側のバリチェ
+      const errors = validCheck(send_data);
+      if(errors)
+      {
+        alert(errors);
+        return;
+      }
+
       const response_api = await fetch(api_url, {
           method: "POST",
           headers: {
@@ -74,10 +83,17 @@ function CustomerEntryPage() {
           body: JSON.stringify(send_data),
           credentials: 'include',
       });
+      if (!response_api.ok) {
+        throw new Error("API失敗：" + response_api.status);
+      }
       const result = await response_api.json();
       if(result.success == true) 
       {
           alert("顧客情報の登録に成功しました。");
+      }
+      else
+      {
+          errorAlert(result.errors);
       }
     } catch(error) {
         console.error("登録失敗", error);

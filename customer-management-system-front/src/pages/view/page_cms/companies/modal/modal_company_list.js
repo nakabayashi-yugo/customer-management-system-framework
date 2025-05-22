@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { getCompanies } from "./../other/companies_service";
 import { dtoCompaniesDelete } from "./../../../../dto/companies/dto_companies_delete.ts";
 
+import { errorAlert } from "./../../../error_alert.js";
+
 export default function CompaniesListModal({ isOpen, onClose, onEntry, onEdit }) {
   const [listData, setListData] = useState([]);
   const prevIsOpen = useRef(false); // 前回の isOpen を保持
@@ -35,11 +37,18 @@ export default function CompaniesListModal({ isOpen, onClose, onEntry, onEdit })
           body: JSON.stringify(send_data),
           credentials: 'include',
       });
+      if (!response_api.ok) {
+        throw new Error("API失敗：" + response_api.status);
+      }
       const result = await response_api.json();
       if(result.success == true) 
       {
           alert("会社の削除に成功しました。");
           onList();
+      }
+      else
+      {
+        errorAlert(result.errors);
       }
     } catch(error) {
         console.error("削除失敗", error);

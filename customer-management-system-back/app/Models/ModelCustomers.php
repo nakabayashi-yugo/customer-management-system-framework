@@ -41,8 +41,8 @@ class ModelCustomers extends Model
         $data = (array) $dto;
 
         $rules = [
-            'cust_name'      => 'required|string|max:50',
-            'cust_name_kana' => 'required|string|max:50',
+            'cust_name'      => 'required|string|max:32',
+            'cust_name_kana' => 'required|string|max:32',
             'mail_address'   => 'required|email',
             'phone_number'   => 'required|string|max:20',
             'sex'            => 'required|in:男性,女性,その他',

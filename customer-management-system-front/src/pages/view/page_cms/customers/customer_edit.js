@@ -3,9 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { getCompanies } from "./../companies/other/companies_service.js";
 import { getCustomer } from "./other/customer_service.js";
+import { validCheck } from './other/customer_service.js';
 
 import { dtoCustomersEdit } from "./../../../dto/customers/dto_customers_edit.ts";
 
+import { errorAlert } from "./../../error_alert.js";
 //会社モーダル画面関連
 import useModalController from "./../companies/modal_controller.js";
 import CompaniesListModal from "./../companies/modal/modal_company_list.js";
@@ -82,6 +84,14 @@ function CustomerEditPage() {
             send_data.born_date = bornDate;
             send_data.company_id = company;
 
+            //フロント側のバリチェ
+            const errors = validCheck(send_data);
+            if(errors)
+            {
+                alert(errors);
+                return;
+            }
+
             const response_api = await fetch(api_url, {
                 method: "POST",
                 headers: {
@@ -90,11 +100,18 @@ function CustomerEditPage() {
                 body: JSON.stringify(send_data),
                 credentials: 'include',
             });
+            if (!response_api.ok) {
+                throw new Error("API失敗：" + response_api.status);
+            }
             const result = await response_api.json();
             console.log(result);
             if(result.success == true) 
             {
                 alert("顧客情報の編集に成功しました。");
+            }
+            else
+            {
+                errorAlert(result.errors);
             }
         } catch(error) {
             console.error("編集失敗", error);
@@ -125,25 +142,25 @@ function CustomerEditPage() {
                         <tr className="edit-input-name">
                             <th width="100px">顧客名</th>
                             <td className="edit-input-form" id="edit-input-name" width="100px">
-                                <input type="text" placeholder="佐藤　次郎" value={name} onChange={(e) => setName(e.target.value)} />
+                                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-name-kana">
                             <th width="100px">顧客名カナ</th>
                             <td className="edit-input-form" id="edit-input-name-kana" width="100px">
-                                <input type="text" placeholder="サトウ　ジロウ" value={nameKana} onChange={(e) => setNameKana(e.target.value)} />
+                                <input type="text" value={nameKana} onChange={(e) => setNameKana(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-mail-address">
                             <th width="100px">メールアドレス</th>
                             <td className="edit-input-form" id="edit-input-mail-address" width="100px">
-                                <input type="text" placeholder="jirou@gmail.com" value={mailAddress} onChange={(e) => setMailAddress(e.target.value)} />
+                                <input type="text" value={mailAddress} onChange={(e) => setMailAddress(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-phone-number">
                             <th width="100px">電話番号</th>
                             <td className="edit-input-form" id="edit-input-phone-number" width="100px">
-                                <input type="text" placeholder="090-0000-0000" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                                <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-sex">

@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { dtoUsersEntry } from "./../../dto/users/dto_users_entry.ts";
+
+import { errorAlert } from "./../error_alert.js";
 
 function UserLoginPage() {
     const [username, setUsername] = useState('');
@@ -9,15 +12,13 @@ function UserLoginPage() {
     const login_button_ref = useRef(null);
 
     const handleEntry = async () => {
-        console.log('新規登録実行', username, password);
         // ここでAPI叩く処理を書く
         try {
             const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/users/entry";
             const send_data = new dtoUsersEntry({
-                user_name: username,
-                passwd: password
+                user_name: username ?? "",
+                passwd: password ?? "",
             });
-            console.log(send_data);
 
             const response_api = await fetch(api_url, {
                 method: "POST",
@@ -27,6 +28,9 @@ function UserLoginPage() {
                 body: JSON.stringify(send_data),
                 credentials: 'include',
             });
+            if (!response_api.ok) {
+                throw new Error("API失敗：" + response_api.status);
+            }
             const result = await response_api.json();
             if(result.success == true)
             {
@@ -34,7 +38,7 @@ function UserLoginPage() {
             }
             else
             {
-                throw new Error("なんでかは知らないよ");
+                errorAlert(result.errors);
             }
         } catch(error) {
             console.error("新規登録失敗：", error);
@@ -58,7 +62,7 @@ function UserLoginPage() {
     return (
         <div className="main-wrapper">
             <div className="main-header">
-                <h1 className="main-title">ログイン</h1>
+                <h1 className="main-title">新規ユーザー登録</h1>
                     </div>
 
                     <div className="main-content">

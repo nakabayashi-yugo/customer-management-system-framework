@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 
 import { dtoCompaniesEntry } from "./../../../../dto/companies/dto_companies_entry.ts";
 
+import { validCheck } from './../other/companies_service.js';
+import { errorAlert } from "./../../../error_alert.js";
+
 export default function CompaniesEntryModal({ isOpen, onClose, onBack }) {
   const [name, setName] = useState("");
 
@@ -11,6 +14,14 @@ export default function CompaniesEntryModal({ isOpen, onClose, onBack }) {
       const send_data = new dtoCompaniesEntry();
       send_data.company_name = name;
 
+      //フロント側のバリチェ
+      const errors = validCheck(send_data);
+      if(errors)
+      {
+        alert(errors);
+        return;
+      }
+
       const response_api = await fetch(api_url, {
           method: "POST",
           headers: {
@@ -19,13 +30,20 @@ export default function CompaniesEntryModal({ isOpen, onClose, onBack }) {
           body: JSON.stringify(send_data),
           credentials: 'include',
       });
+      if (!response_api.ok) {
+        throw new Error("API失敗：" + response_api.status);
+      }
       const result = await response_api.json();
       if(result.success == true) 
       {
-          alert("顧客情報の登録に成功しました。");
+          alert("会社情報の登録に成功しました。");
+      }
+      else
+      {
+        errorAlert(result.errors);
       }
     } catch(error) {
-        console.error("登録失敗", error);
+        console.error("新規会社登録失敗", error);
     }
   }
 

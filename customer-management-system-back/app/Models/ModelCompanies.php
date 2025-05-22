@@ -30,7 +30,7 @@ class ModelCompanies extends Model
         $data = (array) $data;
 
         $rules = [
-            'company_name' => 'required|string|max:100|unique:companies,company_name',
+            'company_name' => 'required|string|max:32|unique:companies,company_name',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -74,7 +74,10 @@ class ModelCompanies extends Model
         $deletedCount = $this::where("user_id", $dto->user_id)
                             ->where("company_id", $dto->company_id)
                             ->delete();
-        return $deletedCount > 0 ? ["success" => true] : [];
+        return [
+            'success' => $deletedCount > 0,
+            'code'    => ErrorCode::SUCCESS,
+        ];
     }
 
     public function companyEntry($data)
@@ -84,7 +87,10 @@ class ModelCompanies extends Model
             "user_id"      => $dto->user_id,
             "company_name" => $dto->company_name,
         ]);
-        return $created ? ["success" => true] : [];
+        return [
+            'success' => isset($created->company_id),
+            'code'    => ErrorCode::SUCCESS,
+        ];
     }
 
     public function companyEdit($data)
@@ -95,7 +101,10 @@ class ModelCompanies extends Model
                             ->update([
                                 'company_name' => $dto->company_name,
                             ]);
-        return $updatedCount > 0 ? ["success" => true] : [];
+        return [
+            'success' => $updatedCount > 0,
+            'code'    => ErrorCode::SUCCESS,
+        ];
     }
 
     public function deleteValidCheck($data): array

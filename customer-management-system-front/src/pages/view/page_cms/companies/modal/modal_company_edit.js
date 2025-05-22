@@ -3,6 +3,9 @@ import { useState, useEffect, useRef } from 'react';
 import { getCompany } from "./../other/companies_service";
 import { dtoCompaniesEdit } from "./../../../../dto/companies/dto_companies_edit.ts";
 
+import { validCheck } from './../other/companies_service.js';
+import { errorAlert } from "./../../../error_alert.js";
+
 export default function CompaniesEditModal({ isOpen, companyId, onClose, onBack }) {
   const [name, setName] = useState("");
   const prevIsOpen = useRef(false); // 前回の isOpen を保持
@@ -26,7 +29,14 @@ export default function CompaniesEditModal({ isOpen, companyId, onClose, onBack 
       const send_data = new dtoCompaniesEdit();
       send_data.company_id = companyId;
       send_data.company_name = name;
-      console.log(send_data);
+
+      //フロント側のバリチェ
+      const errors = validCheck(send_data);
+      if(errors)
+      {
+        alert(errors);
+        return;
+      }
 
       const response_api = await fetch(api_url, {
           method: "POST",
@@ -36,13 +46,20 @@ export default function CompaniesEditModal({ isOpen, companyId, onClose, onBack 
           body: JSON.stringify(send_data),
           credentials: 'include',
       });
+      if (!response_api.ok) {
+        throw new Error("API失敗：" + response_api.status);
+      }
       const result = await response_api.json();
       if(result.success == true) 
       {
-          alert("顧客情報の登録に成功しました。");
+          alert("会社情報の編集に成功しました。");
+      }
+      else
+      {
+        errorAlert(result.errors);
       }
     } catch(error) {
-        console.error("登録失敗", error);
+        console.error("会社編集失敗", error);
     }
   }
 

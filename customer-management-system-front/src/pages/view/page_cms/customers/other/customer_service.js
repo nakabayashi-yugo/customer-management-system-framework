@@ -6,7 +6,7 @@ export async function onCount(data)
 {
     const api_url = "http://localhost/nakabayashi_system_training/cms_framework/customer-management-system-back/public/api/customers/count";
     try {
-        const response = await fetch(api_url, {
+        const response_api = await fetch(api_url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -14,11 +14,15 @@ export async function onCount(data)
             body: JSON.stringify(data),
             credentials: 'include',
         });
+        if (!response_api.ok) {
+            throw new Error("API失敗：" + response_api.status);
+        }
 
-        const result = await response.json();
+        const result = await response_api.json();
         return result.data ?? 0;  // ← 取れなかったら0を返す
     } catch (error) {
         console.error("顧客件数取得失敗：", error);
+        return 0;
     }
 }
 
@@ -30,7 +34,7 @@ export async function getCustomer(cust_id)
     try {
         const send_data = new dtoCustomersGetCustomer();
         send_data.cust_id = cust_id;
-        const response = await fetch(api_url, {
+        const response_api = await fetch(api_url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -38,9 +42,66 @@ export async function getCustomer(cust_id)
             body: JSON.stringify(send_data),
             credentials: 'include',
         });
-        const result = await response.json();
+        if (!response_api.ok) {
+            throw new Error("API失敗：" + response_api.status);
+        }
+        const result = await response_api.json();
         return result.data ?? null;
     } catch (error) {
         console.error("顧客取得失敗", error);
+        return null;
     }
+}
+
+export function validCheck(data) {
+  const errorList = [];
+
+  // 顧客名（必須・最大32文字）
+  if (!data.cust_name || data.cust_name.trim() === "") {
+    errorList.push("顧客名を入力してください");
+  }
+  if (data.cust_name && data.cust_name.length > 32) {
+    errorList.push("顧客名は32文字以内で入力してください");
+  }
+
+  // 顧客名カナ
+  if (!data.cust_name_kana || data.cust_name_kana.trim() === "") {
+    errorList.push("顧客名カナを入力してください");
+  }
+  if (data.cust_name_kana && data.cust_name_kana.length > 32) {
+    errorList.push("顧客名カナは32文字以内で入力してください");
+  }
+
+  // メールアドレス
+  if (!data.mail_address || data.mail_address.trim() === "") {
+    errorList.push("メールアドレスを入力してください");
+  } else if (!/^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(data.mail_address)) {
+    errorList.push("正しいメールアドレス形式で入力してください");
+  }
+
+  // 電話番号
+  if (!data.phone_number || data.phone_number.trim() === "") {
+    errorList.push("電話番号を入力してください");
+  }
+  if (data.phone_number && data.phone_number.length > 20) {
+    errorList.push("電話番号は20文字以内で入力してください");
+  }
+
+  // 性別
+  if (!["男性", "女性", "その他"].includes(data.sex)) {
+    errorList.push("性別を選択してください");
+  }
+
+  // 会社ID
+  if (!data.company_id || isNaN(parseInt(data.company_id))) {
+    errorList.push("会社を選択してください");
+  }
+
+  // 生年月日
+  if (!data.born_date || !/^\d{4}-\d{2}-\d{2}$/.test(data.born_date)) {
+    errorList.push("生年月日を正しく入力してください（例：1990-01-01）");
+  }
+
+  // 1つの文字列として返す（改行で結合）
+  return errorList.join('\n');
 }
