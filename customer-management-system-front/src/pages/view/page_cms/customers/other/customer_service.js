@@ -56,20 +56,28 @@ export async function getCustomer(cust_id)
 export function validCheck(data) {
   const errorList = [];
 
-  // 顧客名（必須・最大32文字）
+  // 顧客名（必須・最大32文字・漢字・ひらがな・スペースのみ）
   if (!data.cust_name || data.cust_name.trim() === "") {
     errorList.push("顧客名を入力してください");
-  }
-  if (data.cust_name && data.cust_name.length > 32) {
-    errorList.push("顧客名は32文字以内で入力してください");
+  } else {
+    if (data.cust_name.length > 32) {
+      errorList.push("顧客名は32文字以内で入力してください");
+    }
+    if (!/^[\p{Script=Hiragana}\p{Script=Han} 　]+$/u.test(data.cust_name)) {
+      errorList.push("顧客名は漢字・ひらがな・スペースのみで入力してください");
+    }
   }
 
-  // 顧客名カナ
+  // 顧客名カナ（必須・最大32文字・カタカナ・スペースのみ）
   if (!data.cust_name_kana || data.cust_name_kana.trim() === "") {
     errorList.push("顧客名カナを入力してください");
-  }
-  if (data.cust_name_kana && data.cust_name_kana.length > 32) {
-    errorList.push("顧客名カナは32文字以内で入力してください");
+  } else {
+    if (data.cust_name_kana.length > 32) {
+      errorList.push("顧客名カナは32文字以内で入力してください");
+    }
+    if (!/^[\p{Script=Katakana}ー　]+$/u.test(data.cust_name_kana)) {
+      errorList.push("顧客名カナはカタカナとスペースのみで入力してください");
+    }
   }
 
   // メールアドレス
@@ -79,12 +87,16 @@ export function validCheck(data) {
     errorList.push("正しいメールアドレス形式で入力してください");
   }
 
-  // 電話番号
+  // 電話番号（必須・最大20文字・数字と-のみ）
   if (!data.phone_number || data.phone_number.trim() === "") {
     errorList.push("電話番号を入力してください");
-  }
-  if (data.phone_number && data.phone_number.length > 20) {
-    errorList.push("電話番号は20文字以内で入力してください");
+  } else {
+    if (data.phone_number.length > 20) {
+      errorList.push("電話番号は20文字以内で入力してください");
+    }
+    if (!/^[0-9\-]+$/.test(data.phone_number)) {
+      errorList.push("電話番号は数字とハイフンのみで入力してください");
+    }
   }
 
   // 性別
@@ -97,11 +109,18 @@ export function validCheck(data) {
     errorList.push("会社を選択してください");
   }
 
-  // 生年月日
+  // 生年月日（形式 & 今日より過去）
   if (!data.born_date || !/^\d{4}-\d{2}-\d{2}$/.test(data.born_date)) {
     errorList.push("生年月日を正しく入力してください（例：1990-01-01）");
+  } else {
+    const inputDate = new Date(data.born_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 今日の00:00に固定
+    if (inputDate > today) {
+      errorList.push("生年月日は今日以前の日付を入力してください");
+    }
   }
 
-  // 1つの文字列として返す（改行で結合）
+  // まとめて1つの文字列で返す
   return errorList.join('\n');
 }
