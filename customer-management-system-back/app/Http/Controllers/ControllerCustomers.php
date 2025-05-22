@@ -18,6 +18,7 @@ class ControllerCustomers extends Controller
 {
     public function __construct()
     {
+        //file_put_contents("./debug_log.txt", "受け取りデータ:" . print_r($input, true) . "\n");
         $this->service = new ServiceCustomers();
     }
 

@@ -66,7 +66,13 @@ export default function CompaniesEntryModal({ isOpen, onClose, onBack }) {
                 <tr className="modal-entry-input-name" style={{ height: "24px" }} align="center">
                   <th width="100px" bgcolor="#D3D3D3">会社名</th>
                   <td className="modal-entry-input-form-name" width="200px" bgcolor="#FFFFFF">
-                    <input type="text" id="modal-entry-input-name" placeholder="株式会社○○" value={name} onChange={(e) => setName(e.target.value)} />
+                    <input 
+                    type="text" 
+                    id="modal-entry-input-name" 
+                    name="company-name"
+                    placeholder="株式会社○○" 
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)} />
                   </td>
                 </tr>
               </tbody>

@@ -142,31 +142,54 @@ function CustomerEditPage() {
                         <tr className="edit-input-name">
                             <th width="100px">顧客名</th>
                             <td className="edit-input-form" id="edit-input-name" width="100px">
-                                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                                <input 
+                                type="text" 
+                                name="cust-name"
+                                placeholder="佐藤　次郎" 
+                                value={name} 
+                                onChange={(e) => setName(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-name-kana">
                             <th width="100px">顧客名カナ</th>
                             <td className="edit-input-form" id="edit-input-name-kana" width="100px">
-                                <input type="text" value={nameKana} onChange={(e) => setNameKana(e.target.value)} />
+                                <input 
+                                type="text" 
+                                name="cust-name-kana"
+                                placeholder="サトウ　ジロウ" 
+                                value={nameKana} 
+                                onChange={(e) => setNameKana(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-mail-address">
                             <th width="100px">メールアドレス</th>
                             <td className="edit-input-form" id="edit-input-mail-address" width="100px">
-                                <input type="text" value={mailAddress} onChange={(e) => setMailAddress(e.target.value)} />
+                                <input 
+                                type="text" 
+                                name="mail-address"
+                                placeholder="jirou@gmail.com" 
+                                value={mailAddress} 
+                                onChange={(e) => setMailAddress(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-phone-number">
                             <th width="100px">電話番号</th>
                             <td className="edit-input-form" id="edit-input-phone-number" width="100px">
-                                <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                                <input 
+                                type="text" 
+                                name="phone-number"
+                                placeholder="090-0000-0000" 
+                                value={phoneNumber} 
+                                onChange={(e) => setPhoneNumber(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-sex">
                             <th width="100px">性別</th>
                             <td className="edit-input-form" id="edit-input-sex" width="100px">
-                                <select value={sex} onChange={(e) => setSex(e.target.value)}>
+                                <select 
+                                name="sex"
+                                value={sex} 
+                                onChange={(e) => setSex(e.target.value)}>
                                 <option value="男性">男性</option>
                                 <option value="女性">女性</option>
                                 <option value="その他">その他</option>
@@ -176,13 +199,21 @@ function CustomerEditPage() {
                         <tr className="edit-input-born-date">
                             <th width="100px">生年月日</th>
                             <td className="edit-input-form" id="edit-input-born-date" width="100px">
-                                <input type="date" value={bornDate} onChange={(e) => setBornDate(e.target.value)} />
+                                <input 
+                                type="date"
+                                name="born-date" 
+                                value={bornDate} 
+                                onChange={(e) => setBornDate(e.target.value)} />
                             </td>
                         </tr>
                         <tr className="edit-input-company">
                             <th width="100px">所属会社</th>
                             <td className="edit-input-form" id="edit-input-company" width="100px">
-                                <select id="search_company" value={company} onChange={(e) => setCompany(e.target.value)}>
+                                <select 
+                                id="search_company" 
+                                name="company-id"
+                                value={company} 
+                                onChange={(e) => setCompany(e.target.value)}>
                                 <option value="">会社を選択</option>
                                 {companiesData.map((companyItem) => (
                                     <option key={companyItem.company_id} value={companyItem.company_id}>
@@ -210,11 +241,11 @@ function CustomerEditPage() {
                 <CompaniesListModal
                 isOpen={currentModal === "list"}
                 onClose={closeModal}
-                onEntry={openCompanyEntry}
                 onEdit={openCompanyEdit}
+                onEntry={openCompanyEdit}
                 />
                 <CompaniesEntryModal
-                isOpen={currentModal === "entry"}
+                isOpen={currentModal === "edit"}
                 onClose={closeModal}
                 onBack={openCompanyList}
                 />

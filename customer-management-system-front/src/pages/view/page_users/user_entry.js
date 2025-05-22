@@ -74,6 +74,7 @@ function UserLoginPage() {
                                     <td className="user-input" id="user-input-name" width="100px">
                                         <input
                                             type="text"
+                                            name="user-name"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                         />
@@ -84,6 +85,7 @@ function UserLoginPage() {
                                     <td className="user-input" id="user-input-passwd" width="100px">
                                         <input
                                             type="password"
+                                            name="password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                         />

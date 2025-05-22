@@ -194,6 +194,7 @@ function CustomerListPage() {
             }
             const result = await response_api.json();
             if (result.success) {
+                alert("削除に成功しました");
                 onList();  // 削除成功後に一覧更新
             } else {
                 alert("削除に失敗しました");

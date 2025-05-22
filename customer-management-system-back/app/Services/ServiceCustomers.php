@@ -36,12 +36,6 @@ class ServiceCustomers extends ServiceBase
     // 顧客削除
     public function customerDelete(DtoCustomersDelete $dto)
     {
-        $errors = $this->model->deleteValidCheck($dto);
-        if (!empty($errors)) {
-            $this->addErrorCodes($errors);
-            return;
-        }
-
         $result = $this->model->customerDelete($dto);
         $this->addErrorCode($result['code']);
         return $result;

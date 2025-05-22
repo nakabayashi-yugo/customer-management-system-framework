@@ -83,7 +83,12 @@ export default function CompaniesEditModal({ isOpen, companyId, onClose, onBack 
                   <th width="100px" bgcolor="#D3D3D3">会社名</th>
                   <td className="modal-edit-input-form-name" width="200px" bgcolor="#FFFFFF">
                     <input type="hidden" id="modal-edit-input-id" value={companyId} readOnly />
-                    <input type="text" id="modal-edit-input-name" value={name} onChange={(e) => setName(e.target.value)}/>
+                    <input 
+                    type="text" 
+                    id="modal-edit-input-name" 
+                    name="company-name"
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)}/>
                   </td>
                 </tr>
               </tbody>
