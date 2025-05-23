@@ -227,19 +227,24 @@ function CustomerListPage() {
                         <div className="search-customer-name">
                             <input
                                 type="text"
+                                name="cust-name-kana"
                                 placeholder="顧客名カナ"
                                 value={nameKana}
                                 onChange={(e) => setNameKana(e.target.value)}
                             />
                             <input
                                 type="text"
+                                name="cust-name"
                                 placeholder="顧客名"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
 
-                        <select className="search-sex" onChange={(e) => setSex(e.target.value)}>
+                        <select 
+                            name="sex"
+                            className="search-sex" 
+                            onChange={(e) => setSex(e.target.value)}>
                             <option value="">全て</option>
                             <option value="男性">男性</option>
                             <option value="女性">女性</option>
@@ -247,39 +252,51 @@ function CustomerListPage() {
                         </select>
 
                         <div className="search-born-date-box">
-                            <select className="search-born-year" onChange={(e) => setBornYear(e.target.value)}>
-                            <option value="">誕生年</option>
-                            {
-                                year_list.map((year) => (
-                                    <option key={year} value={year}>
-                                        {year}
-                                    </option>
-                                ))
-                            }
+                            <select 
+                                name="born-year"
+                                className="search-born-year" 
+                                onChange={(e) => setBornYear(e.target.value)}>
+                                <option value="">誕生年</option>
+                                {
+                                    year_list.map((year) => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))
+                                }
                             </select>
-                            <select className="search-born-month" onChange={(e) => setBornMonth(e.target.value)}>
-                            <option value="">誕生月</option>
-                            {
-                                month_list.map((month) => (
-                                    <option key={month} value={month}>
-                                        {month}
-                                    </option>
-                                ))
-                            }
+                            <select 
+                                name="born-month"
+                                className="search-born-month" 
+                                onChange={(e) => setBornMonth(e.target.value)}>
+                                <option value="">誕生月</option>
+                                {
+                                    month_list.map((month) => (
+                                        <option key={month} value={month}>
+                                            {month}
+                                        </option>
+                                    ))
+                                }
                             </select>
-                            <select className="search-born-date" onChange={(e) => setBornDate(e.target.value)}>
-                            <option value="">誕生日</option>
-                            {
-                                date_list.map((date) => (
-                                    <option key={date} value={date}>
-                                        {date}
-                                    </option>
-                                ))
-                            }
+                            <select 
+                                name="born-date"
+                                className="search-born-date" 
+                                onChange={(e) => setBornDate(e.target.value)}>
+                                <option value="">誕生日</option>
+                                {
+                                    date_list.map((date) => (
+                                        <option key={date} value={date}>
+                                            {date}
+                                        </option>
+                                    ))
+                                }
                             </select>
                         </div>
 
-                        <select className="search-company" onChange={(e) => setCompany(e.target.value)}>
+                        <select 
+                            name="company-id"
+                            className="search-company" 
+                            onChange={(e) => setCompany(e.target.value)}>
                             <option value="">全て</option>
                             {Array.isArray(companiesData) && companiesData.map((companyItem) => (
                                 <option key={companyItem.company_id} value={companyItem.company_id}>
@@ -288,7 +305,7 @@ function CustomerListPage() {
                             ))}
                         </select>
 
-                        <button className="search-button button" onClick={onSearch}>検索</button>
+                        <button className="search-button button" id="search-button" onClick={onSearch}>検索</button>
                         <button className="reset-button button" id="reset">リセット</button>
                     </div>
                 </div>
@@ -345,25 +362,43 @@ function CustomerListPage() {
                         </tr>
                         </thead>
                         <tbody className="list-customers-table-item" id="list-customers-table-item">
-                            {listData.map((customer, index) => (
+                        {
+                            listData.length === 0 ? (
+                            <tr>
+                                <td colSpan="11">該当するデータはありません</td>
+                            </tr>
+                            ) : (
+                            listData.map((customer, index) => (
                                 <tr key={index}>
-                                    <td>{customer.cust_id}</td>
-                                    <td>{customer.cust_name}</td>
-                                    <td>{customer.cust_name_kana}</td>
-                                    <td>{customer.mail_address}</td>
-                                    <td>{customer.phone_number}</td>
-                                    <td>{customer.sex}</td>
-                                    <td>{customer.company_name}</td>
-                                    <td>{customer.insert_at}</td>
-                                    <td>{customer.update_at}</td>
-                                    <td>
-                                        <button className="list-costomers-table-edit-button edit-button button" onClick={() => handleToEdit(customer.cust_id)}>編集</button>
-                                    </td>
-                                    <td>
-                                        <button className="list-customers-table-delete-button delete-button button" onClick={() => onDelete(customer.cust_id)}>削除</button>
-                                    </td>
+                                <td>{customer.cust_id}</td>
+                                <td>{customer.cust_name}</td>
+                                <td>{customer.cust_name_kana}</td>
+                                <td>{customer.mail_address}</td>
+                                <td>{customer.phone_number}</td>
+                                <td>{customer.sex}</td>
+                                <td>{customer.company_name}</td>
+                                <td>{new Date(customer.insert_at).toLocaleString("ja-JP")}</td>
+                                <td>{new Date(customer.update_at).toLocaleString("ja-JP")}</td>
+                                <td>
+                                    <button
+                                    className="list-costomers-table-edit-button edit-button button"
+                                    onClick={() => handleToEdit(customer.cust_id)}
+                                    >
+                                    編集
+                                    </button>
+                                </td>
+                                <td>
+                                    <button
+                                    className="list-customers-table-delete-button delete-button button"
+                                    onClick={() => onDelete(customer.cust_id)}
+                                    >
+                                    削除
+                                    </button>
+                                </td>
                                 </tr>
-                            ))}
+                            ))
+                            )
+                        }
                         </tbody>
                     </table>
                     </div>

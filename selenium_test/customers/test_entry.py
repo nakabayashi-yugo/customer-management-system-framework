@@ -66,7 +66,10 @@ def login(driver):
 
 if __name__ == "__main__":
     test_data_list = [
-        {"cust_name": "ばばばばばばばばばばややややややややややししししししししししなな", "cust_name_kana": "ばばばばばばばばばばややややややややややししししししししししなな", "mail_address": "Aaaa", "phone_number": "000へ0000-0000", "sex": "男性", "born_date": "002020/05/30", "company_id": "23"},
+        {"cust_name": "ばばばばばばばばばばややややややややややししししししししししなななななななななな", "cust_name_kana": "ばばばばばばばばばばややややややややややししししししししししななな", "mail_address": "Aaaa", "phone_number": "000へ0000-0000", "sex": "男性", "born_date": "002020/05/30", "company_id": "23"},
+        {"cust_name": "ばやっしーだぜ！！", "cust_name_kana": "バヤッシーダゼ！！", "mail_address": "a@a.a", "phone_number": "000-0000-0000", "sex": "男性", "born_date": "002025/05/30", "company_id": "23"},
+        {"cust_name": "ばやっしーだぜ", "cust_name_kana": "バヤッシーダゼ", "mail_address": "bayashi@gmail.com", "phone_number": "000-0000-0000", "sex": "男性", "born_date": "002025/05/23", "company_id": "23"},
+        {"cust_name": "ばやっしだぜ", "cust_name_kana": "バヤッシーダゼ", "mail_address": "bayashi@gmail.com", "phone_number": "000-0000-0000", "sex": "男性", "born_date": "002025/05/20", "company_id": "23"},
     ]
 
     for i, data in enumerate(test_data_list):
